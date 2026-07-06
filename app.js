@@ -248,8 +248,8 @@ let currentAttachedFile = null;
 let selectedReportType = "1st"; // "1st" | "2nd" | "final"
 
 // --- GOOGLE SCRIPT URL FOR FREE API CONNECTION ---
-// 여기에 깃허브 배포 가이드라인에 따라 복사한 구글 웹앱 URL을 입력하시면 실서비스 연동이 완료됩니다!
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSQq1-KFWS5koqtPh5pnI5-21eQuPJbunb-RbY5D5oIVnopUqzRB2sOJj_da3CYWaAWg/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2N9Dwiyne759Wr5jvN3tBVlW26gHzaVqAPQbZq5FNLKKGkzhkel30tRFr5VmdW396/exec";
+
 
 // --- DOM ELEMENTS ---
 const loginOverlayScreen = document.getElementById("login-overlay-screen");
