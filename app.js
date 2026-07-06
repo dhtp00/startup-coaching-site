@@ -298,6 +298,7 @@ const repFinalEvalText = document.getElementById("rep-final-eval-text");
 const reportCoachEvalInputContainer = document.getElementById("report-coach-eval-input-container");
 const reportFinalEvalTextarea = document.getElementById("report-final-eval-textarea");
 const btnSaveReportEval = document.getElementById("btn-save-report-eval");
+const summaryCardsContainer = document.getElementById("summary-cards-container");
 
 const mainHeaderTitle = document.getElementById("main-header-title");
 
@@ -631,9 +632,6 @@ function renderNoticeBoard() {
 }
 
 function applyDynamicConfigs() {
-  // 대시보드 코치명 카드 변경
-  const coachCard = document.querySelector(".summary-grid .card:first-child .card-value");
-  if (coachCard) coachCard.innerText = coachName;
 
   // 교육 이수 탭의 3대 교육과목 테이블 헤더 명칭 동적화
   const eduHrTh = document.querySelector("#section-edu table th:nth-child(2)");
@@ -693,26 +691,123 @@ function getFilteredCompanies() {
 // --- RENDER DASHBOARD (SIMPLIFIED VERSION) ---
 function renderDashboard() {
   const filtered = getFilteredCompanies();
-
   const total = filtered.length;
-  document.getElementById("stat-total-companies").innerText = `${total}개사`;
-  
-  const totalCoaching = filtered.reduce((acc, c) => acc + c.coachingCount, 0);
-  const targetCoaching = total * 3;
-  const rate = targetCoaching > 0 ? Math.round((totalCoaching / targetCoaching) * 100) : 0;
-  document.getElementById("stat-coaching-rate").innerText = `${rate}%`;
 
-  // Calculate Monthly Checkpoint Progress
-  let totalChecks = 0;
-  let activeChecks = 0;
-  filtered.forEach(c => {
-    Object.keys(c.budget.checks).forEach(k => {
-      totalChecks++;
-      if (c.budget.checks[k]) activeChecks++;
-    });
-  });
-  const checkRate = totalChecks > 0 ? Math.round((activeChecks / totalChecks) * 100) : 0;
-  document.getElementById("stat-doc-count").innerText = `${checkRate}%`;
+  const activeMonthsForProgress = ["m7", "m8", "m9", "m10", "m11", "m12"];
+
+  // Render Role-specific Summary Cards
+  if (summaryCardsContainer) {
+    if (currentUser.role === "coach") {
+      // 1. 지원대상 기업 수
+      const preCount = companies.filter(c => c.type.includes("예비")).length;
+      const earlyCount = companies.filter(c => !c.type.includes("예비")).length;
+
+      // 2. 전체 밀착 코칭 시행률
+      const totalCoaching = companies.reduce((acc, c) => acc + c.coachingCount, 0);
+      const targetCoaching = companies.length * 3;
+      const coachingRate = targetCoaching > 0 ? Math.round((totalCoaching / targetCoaching) * 100) : 0;
+
+      // 3. 사업비 집행 전체 점검율
+      let totalChecks = 0;
+      let activeChecks = 0;
+      companies.forEach(c => {
+        activeMonthsForProgress.forEach(k => {
+          totalChecks++;
+          if (c.budget.checks[k]) activeChecks++;
+        });
+      });
+      const checkRate = totalChecks > 0 ? Math.round((activeChecks / totalChecks) * 100) : 0;
+
+      // 4. 필수 교육 전체 완료율
+      let totalEduClasses = companies.length * 3;
+      let completedEduClasses = 0;
+      companies.forEach(c => {
+        if (c.education.hr === "이수") completedEduClasses++;
+        if (c.education.accounting === "이수") completedEduClasses++;
+        if (c.education.law === "이수") completedEduClasses++;
+      });
+      const eduRate = totalEduClasses > 0 ? Math.round((completedEduClasses / totalEduClasses) * 100) : 0;
+
+      summaryCardsContainer.innerHTML = `
+        <div class="card">
+          <div class="card-title">지원대상 기업 수</div>
+          <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${total}개사</div>
+          <div class="card-desc"><span class="trend-up">예비 ${preCount} / 초기 ${earlyCount}</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">전체 밀착 코칭 시행률</div>
+          <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${coachingRate}%</div>
+          <div class="card-desc">총 ${targetCoaching}회 중 ${totalCoaching}회 완료</div>
+        </div>
+        <div class="card">
+          <div class="card-title">사업비 집행 전체 점검율</div>
+          <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${checkRate}%</div>
+          <div class="card-desc">전체 기업 월별 점검 완료 비중</div>
+        </div>
+        <div class="card">
+          <div class="card-title">필수 교육 전체 완료율</div>
+          <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${eduRate}%</div>
+          <div class="card-desc">총 ${totalEduClasses}개 과목 중 ${completedEduClasses}개 완료</div>
+        </div>
+      `;
+    } else {
+      // STARTUP VIEW
+      const myCompany = companies.find(c => c.id === currentUser.companyId) || filtered[0];
+      if (myCompany) {
+        // 1. 나의 온보딩 진행 단계
+        let currentStage = "1단계";
+        let stageDesc = "사전 실태조사 입력 대기";
+        if (myCompany.surveyData) {
+          const eduFinished = myCompany.education.hr === "이수" && myCompany.education.accounting === "이수" && myCompany.education.law === "이수";
+          if (eduFinished) {
+            currentStage = "4단계";
+            stageDesc = "최종 결과보고서 작성/제출 대기";
+          } else {
+            currentStage = "2~3단계";
+            stageDesc = "필수 교육 이수 및 코칭 진행 중";
+          }
+        }
+
+        // 2. 나의 밀착 코칭 현황
+        const myCoaching = myCompany.coachingCount;
+
+        // 3. 나의 필수 교육 이수 현황
+        let myCompletedEdu = 0;
+        if (myCompany.education.hr === "이수") myCompletedEdu++;
+        if (myCompany.education.accounting === "이수") myCompletedEdu++;
+        if (myCompany.education.law === "이수") myCompletedEdu++;
+
+        // 4. 사업비 집행 점검 현황
+        let myCheckedMonths = 0;
+        activeMonthsForProgress.forEach(m => {
+          if (myCompany.budget.checks[m]) myCheckedMonths++;
+        });
+
+        summaryCardsContainer.innerHTML = `
+          <div class="card">
+            <div class="card-title">나의 온보딩 진행 단계</div>
+            <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${currentStage} 진행 중</div>
+            <div class="card-desc">${stageDesc}</div>
+          </div>
+          <div class="card">
+            <div class="card-title">나의 밀착 코칭 현황</div>
+            <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${myCoaching}회 완료</div>
+            <div class="card-desc">의무 코칭 3회 목표 (진행률 ${Math.round((myCoaching / 3) * 100)}%)</div>
+          </div>
+          <div class="card">
+            <div class="card-title">나의 필수 교육 이수 현황</div>
+            <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">진행 중 (${myCompletedEdu}/3)</div>
+            <div class="card-desc">노무(${myCompany.education.hr}), 회계(${myCompany.education.accounting}), 법률(${myCompany.education.law})</div>
+          </div>
+          <div class="card">
+            <div class="card-title">사업비 집행 점검 현황</div>
+            <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">점검 완료 (${myCheckedMonths}/6개월)</div>
+            <div class="card-desc">7~12월 중 ${myCheckedMonths}개월 집행 완료</div>
+          </div>
+        `;
+      }
+    }
+  }
 
   // Update training stats on Education sub-panel
   const totalEdu = companies.length;
@@ -742,8 +837,8 @@ function renderDashboard() {
 
     // Monthly checklist circle badges (Coded iteratively)
     let checksHTML = `<div style="display:flex; gap: 4px; align-items:center;">`;
-    const months = ["m5", "m6", "m7", "m8", "m9", "m10", "m11", "m12"];
-    const monthLabels = ["5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+    const months = ["m7", "m8", "m9", "m10", "m11", "m12"];
+    const monthLabels = ["7월", "8월", "9월", "10월", "11월", "12월"];
 
     months.forEach((m, idx) => {
       const isChecked = company.budget.checks[m];
@@ -1227,8 +1322,6 @@ window.openEditCompanyModal = function(id) {
   document.getElementById("c-onestop").value = target.oneStopLink || "";
 
   // Sync checkboxes for monthly checks
-  document.getElementById("chk-m5").checked = target.budget.checks.m5;
-  document.getElementById("chk-m6").checked = target.budget.checks.m6;
   document.getElementById("chk-m7").checked = target.budget.checks.m7;
   document.getElementById("chk-m8").checked = target.budget.checks.m8;
   document.getElementById("chk-m9").checked = target.budget.checks.m9;
@@ -1273,8 +1366,6 @@ companyForm.addEventListener("submit", (e) => {
   const bStatus = document.getElementById("c-budget-status").value;
 
   const checks = {
-    m5: document.getElementById("chk-m5").checked,
-    m6: document.getElementById("chk-m6").checked,
     m7: document.getElementById("chk-m7").checked,
     m8: document.getElementById("chk-m8").checked,
     m9: document.getElementById("chk-m9").checked,
@@ -1764,8 +1855,8 @@ function renderReportSection() {
     reportMonths = ["m10", "m11", "m12"];
     reportMonthLabels = ["10월", "11월", "12월"];
   } else {
-    reportMonths = ["m5", "m6", "m7", "m8", "m9", "m10", "m11", "m12"];
-    reportMonthLabels = ["5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+    reportMonths = ["m7", "m8", "m9", "m10", "m11", "m12"];
+    reportMonthLabels = ["7월", "8월", "9월", "10월", "11월", "12월"];
   }
 
   // Update budget table headers
