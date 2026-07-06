@@ -1289,6 +1289,8 @@ btnAddCompany.addEventListener("click", () => {
   companyEditId.value = "";
   companyModalTitle.innerText = "🏫 신규 창업기업 등록";
   
+  document.getElementById("btn-delete-company").style.display = "none";
+  
   const randNum = Math.floor(1000 + Math.random() * 9000);
   document.getElementById("c-key").value = `HN-NEW-${randNum}`;
   document.getElementById("c-password").value = "1234";
@@ -1302,6 +1304,8 @@ window.openEditCompanyModal = function(id) {
 
   companyModalTitle.innerText = `⚙️ ${target.name} 정보 수정`;
   companyEditId.value = target.id;
+
+  document.getElementById("btn-delete-company").style.display = "inline-block";
 
   document.getElementById("c-name").value = target.name;
   document.getElementById("c-type").value = target.type;
@@ -1440,6 +1444,45 @@ companyForm.addEventListener("submit", (e) => {
   saveToLocalStorage();
   closeCompanyModal();
   renderDashboard();
+});
+
+window.deleteCompany = function(id) {
+  if (currentUser.role !== "coach") {
+    alert("❌ 창업기업 삭제 권한은 전담코치에게만 있습니다.");
+    return;
+  }
+
+  const target = companies.find(c => c.id === id);
+  if (!target) return;
+
+  const isConfirmed = confirm(`⚠️ [경고] "${target.name}" 기업을 정말로 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없으며, 기업의 사업비 현황, 필수 교육 로그 및 매칭된 모든 정보가 영구히 삭제됩니다.`);
+  if (!isConfirmed) return;
+
+  // 1. Remove from companies array
+  companies = companies.filter(c => c.id !== id);
+
+  // 2. Remove associated startup accounts from USERS
+  Object.keys(USERS).forEach(key => {
+    if (USERS[key].companyId === id) {
+      delete USERS[key];
+    }
+  });
+
+  // 3. Save to localStorage and sync with cloud (if URL is set)
+  saveToLocalStorage();
+
+  // 4. Re-render
+  renderDashboard();
+  closeCompanyModal();
+
+  alert(`✅ "${target.name}" 기업 데이터가 성공적으로 삭제되었습니다.`);
+};
+
+document.getElementById("btn-delete-company").addEventListener("click", () => {
+  const idVal = companyEditId.value;
+  if (idVal) {
+    deleteCompany(parseInt(idVal));
+  }
 });
 
 // EDUCATION EDIT
