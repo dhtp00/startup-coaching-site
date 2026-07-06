@@ -219,7 +219,7 @@ let defaultCompanies = [
 let companies = JSON.parse(localStorage.getItem("COMPANIES")) || defaultCompanies;
 
 // --- CONFIG DATA WITH LOCAL STORAGE & CLOUD DB ---
-let coachName = localStorage.getItem("COACH_NAME") || "정세정 주임연구원";
+let coachName = localStorage.getItem("COACH_NAME") || "전담코치";
 
 let defaultEduNames = {
   hr: "기본 노무 실무",
@@ -408,12 +408,7 @@ async function loadCloudData() {
         USERS = data.USERS;
         localStorage.setItem("USERS", JSON.stringify(USERS));
         
-        // 클라우드 데이터 로드 완료 후 현재 로그인 세션 정보 갱신
-        const savedUserEmail = localStorage.getItem("CURRENT_USER_EMAIL");
-        if (savedUserEmail && USERS[savedUserEmail]) {
-          currentUser = USERS[savedUserEmail];
-          if (userNameDisplay) userNameDisplay.innerText = currentUser.name;
-        }
+
       }
       if (data.COMPANIES) {
         companies = data.COMPANIES;
@@ -452,16 +447,8 @@ async function loadCloudData() {
   }
 }
 
-// 최초 구동 시 클라우드 동기화 개시 및 자동 로그인 복원
+// 최초 구동 시 클라우드 동기화 개시
 window.addEventListener("DOMContentLoaded", () => {
-  // 로컬 저장소에서 세션 복원 시도 (즉시 렌더링하여 깜빡임 방지)
-  const savedUserEmail = localStorage.getItem("CURRENT_USER_EMAIL");
-  if (savedUserEmail && USERS[savedUserEmail]) {
-    currentUser = USERS[savedUserEmail];
-    enterPlatform();
-  }
-  
-  // 백그라운드 클라우드 데이터 로드 개시
   loadCloudData();
 });
 
@@ -530,7 +517,6 @@ loginForm.addEventListener("submit", (e) => {
 
   if (matchedUserKey && USERS[matchedUserKey].password === password) {
     currentUser = USERS[matchedUserKey];
-    localStorage.setItem("CURRENT_USER_EMAIL", matchedUserKey);
     enterPlatform();
   } else {
     alert("❌ 아이디(대표자명) 또는 비밀번호가 올바르지 않습니다.");
@@ -571,7 +557,6 @@ signupForm.addEventListener("submit", (e) => {
   };
 
   currentUser = USERS[accountEmail];
-  localStorage.setItem("CURRENT_USER_EMAIL", accountEmail);
   saveToLocalStorage();
   
   alert(`🎉 회원가입이 완료되었습니다!\n이제 대표자명 '${representativeName}'으로 로그인 하실 수 있습니다.`);
@@ -616,7 +601,6 @@ function enterPlatform() {
 
 btnLogout.addEventListener("click", () => {
   currentUser = null;
-  localStorage.removeItem("CURRENT_USER_EMAIL");
   loginOverlayScreen.style.display = "flex";
   mainSidebar.style.display = "none";
   mainContent.style.display = "none";
@@ -678,7 +662,7 @@ function applyDynamicConfigs() {
   // 모니터링 보고서 하단의 코치 작성자 이름 변경
   const repSubtitle = document.querySelector("#printable-report-area .report-header p");
   if (repSubtitle) {
-    repSubtitle.innerHTML = `발행일자: <span id="report-print-date">-</span> | 작성자: 한남대 창업지원단 전담코치 ${coachName}`;
+    repSubtitle.innerHTML = `발행일자: <span id="report-print-date">-</span> | 작성자: 한남대학교 창업지원단 전담코치`;
   }
 
   // 공지사항 렌더링
