@@ -1,5 +1,5 @@
 /**
- * 한남대학교 창업지원단 스타트업 모니터링 시스템 - 구글 스프레드시트 연동용 Apps Script
+ * 한남대학교 창업지원단 스타트업 모니터링 시스템 - 구글 스프레드시트 및 드라이브 연동용 Apps Script
  * 
  * [설치 방법]
  * 1. 구글 스프레드시트(새 시트)를 하나 생성합니다.
@@ -32,7 +32,7 @@ function doGet(e) {
   .setHeader("Access-Control-Allow-Origin", "*");
 }
 
-// POST 요청 처리 (데이터 저장하기)
+// POST 요청 처리 (데이터 저장 및 파일 업로드)
 function doPost(e) {
   try {
     let postData;
@@ -43,10 +43,10 @@ function doPost(e) {
       postData = JSON.parse(e.postData.contents);
     }
     
+    // 1. 전체 데이터 동기화 (채팅, 코칭록, 비밀번호 등 포함)
     if (postData.action === "syncData") {
       const sheet = getOrCreateSheet();
       
-      // 저장할 데이터 오브젝트 구성
       const dbData = {
         USERS: postData.USERS,
         COMPANIES: postData.companies,
@@ -58,12 +58,40 @@ function doPost(e) {
         updatedBy: postData.userEmail || "System"
       };
       
-      // JSON 스트링으로 시트의 A1 셀에 저장 (50,000자 제한 내 안전 저장)
       sheet.getRange(1, 1).setValue(JSON.stringify(dbData));
       
       return ContentService.createTextOutput(JSON.stringify({
         status: "success",
         message: "Data synchronized successfully"
+      }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader("Access-Control-Allow-Origin", "*");
+    }
+    
+    // 2. 구글 드라이브 파일 업로드 처리
+    if (postData.action === "uploadFile") {
+      const fileData = postData.fileData; // base64 data url
+      const base64Data = fileData.split(",")[1];
+      const decoded = Utilities.base64Decode(base64Data);
+      const blob = Utilities.newBlob(decoded, postData.fileType, postData.fileName);
+      
+      // 구글 드라이브 루트 폴더에 파일 저장 (원하는 경우 특정 폴더 ID로 대체 가능)
+      const file = DriveApp.createFile(blob);
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        fileUrl: file.getUrl(),
+        message: "File uploaded to Google Drive successfully!"
+      }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader("Access-Control-Allow-Origin", "*");
+    }
+    
+    // 3. 설문조사 단순 연동 응답 처리 (백업용)
+    if (postData.action === "submitSurvey") {
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "Survey received"
       }))
       .setMimeType(ContentService.MimeType.JSON)
       .setHeader("Access-Control-Allow-Origin", "*");
@@ -92,10 +120,8 @@ function getOrCreateSheet() {
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
-    // 첫 행 넓이와 높이를 늘려 데이터 가독성 확보
     sheet.setRowHeight(1, 100);
     sheet.setColumnWidth(1, 500);
-    // 자동 줄바꿈 설정
     sheet.getRange(1, 1).setWrap(true);
   }
   return sheet;

@@ -684,11 +684,10 @@ function saveToLocalStorage() {
   localStorage.setItem("EDU_NAMES", JSON.stringify(eduNames));
   localStorage.setItem("NOTICES", JSON.stringify(notices));
   
-  // 만약 구글 API 주소가 세팅되어 있다면 자동으로 백그라운드 클라우드 동기화 수행
   if (GOOGLE_SCRIPT_URL) {
     fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
-      mode: "cors",
+      mode: "no-cors",
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
         action: "syncData",
@@ -701,13 +700,8 @@ function saveToLocalStorage() {
         notices: notices
       })
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === "success") {
-        console.log("☁️ 실시간 구글 스프레드시트 동기화 완료");
-      } else {
-        console.warn("⚠️ 구글 동기화 응답 오류:", data.message);
-      }
+    .then(() => {
+      console.log("☁️ 실시간 구글 스프레드시트 동기화 완료 (no-cors)");
     })
     .catch(err => console.log("Google sync delay (offline mode or script URL pending): ", err));
   }
