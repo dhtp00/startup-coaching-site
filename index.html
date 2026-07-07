@@ -79,6 +79,30 @@
       </div>
     </div>
 
+    <!-- 3. PASSWORD CHANGE CARD (MANDATORY FOR FIRST LOGIN) -->
+    <div class="login-card" id="card-change-password" style="display: none;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span style="font-size: 2.5rem;">🔒</span>
+        <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-top: 10px;">최초 로그인 비밀번호 변경</h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">안전한 서비스 이용을 위해 비밀번호를 변경해 주세요.</p>
+      </div>
+      
+      <form id="change-password-form">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="new-password">새로운 비밀번호 설정</label>
+          <input type="password" id="new-password" placeholder="새 비밀번호 입력" required minlength="4">
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="new-password-confirm">새로운 비밀번호 확인</label>
+          <input type="password" id="new-password-confirm" placeholder="새 비밀번호 다시 입력" required minlength="4">
+        </div>
+        
+        <button type="submit" class="send-btn" style="width: 100%; padding: 12px; font-size: 0.95rem;">
+          비밀번호 변경 및 대시보드 진입
+        </button>
+      </form>
+    </div>
+
   </div>
 
   <!-- Sidebar Navigation (Hidden before login) -->
@@ -363,6 +387,13 @@
                   <option value="10인 이상">10인 이상</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label for="sv-restartup">재창업 여부</label>
+                <select id="sv-restartup" required>
+                  <option value="아니오">아니오 (첫 창업)</option>
+                  <option value="예">예 (재창업 기업)</option>
+                </select>
+              </div>
             </div>
 
             <!-- 2. 아이템·사업 개요 -->
@@ -370,11 +401,6 @@
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-item-intro">사업 아이템 한 줄 소개</label>
               <input type="text" id="sv-item-intro" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 12px;">
-              <label for="sv-item-problem">해결하고자 하는 시장의 문제점 (Problem)</label>
-              <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(타깃 시장의 기술적 한계, 기존 제품의 페인 포인트(Pain Point) 또는 어떤 문제를 해결하고자 하는지 서술해 주세요.)</span>
-              <textarea id="sv-item-problem" rows="2" required></textarea>
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-item-target">주요 타깃 고객층 (Target Customer)</label>
@@ -484,6 +510,23 @@
               <label for="sv-need-deliverable">멘토링 과정에서 기대하는 최종 결과물</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 투자용 IR Deck 피드백, 팁스(TIPS) 제안서 초안 고도화, 기술 스케일업을 위한 정부 지원사업 추천 리스트 등)</span>
               <input type="text" id="sv-need-deliverable" required>
+            </div>
+
+            <!-- 8. 교육 분야 수요 조사 -->
+            <div class="survey-section-title">8. 교육 분야 수요 조사 (Educational Needs)</div>
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label for="sv-edu-content">희망/필요 교육 콘텐츠 (필요한 창업 역량 교육 주제)</label>
+              <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 정부지원사업 정산 실무, 투자유치/IR, 특허/지식재산권, 마케팅/영업, 세무/회계 등)</span>
+              <input type="text" id="sv-edu-content" placeholder="예: 정부지원사업 정산 실무 교육, 초기 IR 피칭 멘토링" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+              <label for="sv-edu-method">선호하는 학습 방법</label>
+              <select id="sv-edu-method" required>
+                <option value="온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)">온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)</option>
+                <option value="오프라인 교육 (전문가 초청 세미나, 집체 워크숍)">오프라인 교육 (전문가 초청 세미나, 집체 워크숍)</option>
+                <option value="1:1 맞춤형 밀착 코칭 (사무실 현장 지도)">1:1 맞춤형 밀착 코칭 (사무실 현장 지도)</option>
+                <option value="서면/텍스트 학습 (가이드라인, 체크리스트 자료독학)">서면/텍스트 학습 (가이드라인, 체크리스트 자료독학)</option>
+              </select>
             </div>
 
             <!-- 코치 맞춤형 지원 전략 수립 -->
@@ -636,10 +679,7 @@
               <th style="width: 25%;">아이템 한 줄 소개</th>
               <td colspan="3" id="rep-sv-intro">-</td>
             </tr>
-            <tr>
-              <th>해결 문제 (Problem)</th>
-              <td colspan="3" id="rep-sv-problem">-</td>
-            </tr>
+
             <tr>
               <th>타깃 고객 (Customer)</th>
               <td style="width: 25%;" id="rep-sv-target">-</td>
@@ -694,6 +734,15 @@
               <td id="rep-sv-goals">-</td>
               <th>기대 최종 결과물</th>
               <td id="rep-sv-deliverable">-</td>
+            </tr>
+            <tr>
+              <th colspan="4" style="background-color: #f1f5f9; text-align: left; font-weight: 700; color: #1e293b;">[교육 분야 수요 조사]</th>
+            </tr>
+            <tr>
+              <th>필요 교육 콘텐츠</th>
+              <td id="rep-sv-edu-content">-</td>
+              <th>선호 학습 방법</th>
+              <td id="rep-sv-edu-method">-</td>
             </tr>
             <tr>
               <th style="color: var(--accent-color);">코치 맞춤형<br>지원 전략 수립</th>
@@ -1012,24 +1061,24 @@
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 12px;">
           <div class="form-group">
-            <label for="c-sales">핵심 지표 (매출)</label>
-            <input type="text" id="c-sales" placeholder="예: 5,400천원" required>
+            <label for="c-sales">핵심 지표 (매출) [선택]</label>
+            <input type="text" id="c-sales" placeholder="예: 5,400천원 (공란 시 대기)">
           </div>
           <div class="form-group">
-            <label for="c-emp">핵심 지표 (고용)</label>
-            <input type="text" id="c-emp" placeholder="예: 2명" required>
+            <label for="c-emp">핵심 지표 (고용) [선택]</label>
+            <input type="text" id="c-emp" placeholder="예: 2명 (공란 시 대기)">
           </div>
           <div class="form-group">
-            <label for="c-est-date">설립(개업) 연월일</label>
-            <input type="date" id="c-est-date" required>
+            <label for="c-est-date">설립(개업) 연월일 [선택]</label>
+            <input type="date" id="c-est-date">
           </div>
           <div class="form-group">
-            <label for="c-address">사업장 소재지</label>
-            <input type="text" id="c-address" placeholder="예: 대전광역시 대덕구..." required>
+            <label for="c-address">사업장 소재지 [선택]</label>
+            <input type="text" id="c-address" placeholder="예: 대전광역시 대덕구...">
           </div>
           <div class="form-group">
-            <label for="c-contact">대표자 연락처</label>
-            <input type="text" id="c-contact" placeholder="예: 010-1234-5678" required>
+            <label for="c-contact">대표자 연락처 [선택]</label>
+            <input type="text" id="c-contact" placeholder="예: 010-1234-5678">
           </div>
           <div class="form-group">
             <label for="c-corp-type">창업 형태</label>
@@ -1047,8 +1096,8 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="c-onestop">원스톱 지원센터 연계 현황</label>
-            <input type="text" id="c-onestop" placeholder="예: 대기, 대전혁신센터 법률상담 연계 등" required>
+            <label for="c-onestop">원스톱 지원센터 연계 현황 [선택]</label>
+            <input type="text" id="c-onestop" placeholder="예: 대기, 대전혁신센터 법률상담 연계 등">
           </div>
         </div>
 

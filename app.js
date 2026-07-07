@@ -1,8 +1,30 @@
+// --- AUTO STORAGE MIGRATION FOR NEW DATASET ---
+if (localStorage.getItem("COMPANIES") && !localStorage.getItem("USERS")?.includes("20424601@onboard.com")) {
+  localStorage.removeItem("COMPANIES");
+  localStorage.removeItem("USERS");
+}
+
 // --- DEMO USER ACCOUNT DATA (Simulation of Supabase Auth) ---
 let USERS = JSON.parse(localStorage.getItem("USERS")) || {
   "osy0922@hnu.kr": { role: "coach", name: "정세정 주임연구원", companyId: null, password: "osy0922" },
-  "ceo1@ailink.com": { role: "startup", name: "이영희 대표", companyId: 1, password: "demo1234" },
-  "ceo2@green.com": { role: "startup", name: "김철수 대표", companyId: 2, password: "demo1234" }
+  "20424601@onboard.com": { role: "startup", name: "박지훈 대표", companyId: 1, password: "20424601", isFirstLogin: true },
+  "20425162@onboard.com": { role: "startup", name: "신상호 대표", companyId: 2, password: "20425162", isFirstLogin: true },
+  "20418716@onboard.com": { role: "startup", name: "오영웅 대표", companyId: 3, password: "20418716", isFirstLogin: true },
+  "20420729@onboard.com": { role: "startup", name: "염준 대표", companyId: 4, password: "20420729", isFirstLogin: true },
+  "20429473@onboard.com": { role: "startup", name: "이준석 대표", companyId: 5, password: "20429473", isFirstLogin: true },
+  "20420909@onboard.com": { role: "startup", name: "최성환 대표", companyId: 6, password: "20420909", isFirstLogin: true },
+  "20417065@onboard.com": { role: "startup", name: "이서진 대표", companyId: 7, password: "20417065", isFirstLogin: true },
+  "20415562@onboard.com": { role: "startup", name: "이수빈 대표", companyId: 8, password: "20415562", isFirstLogin: true },
+  "20411989@onboard.com": { role: "startup", name: "정수민 대표", companyId: 9, password: "20411989", isFirstLogin: true },
+  "20417505@onboard.com": { role: "startup", name: "지세빈 대표", companyId: 10, password: "20417505", isFirstLogin: true },
+  "20426983@onboard.com": { role: "startup", name: "김영준 대표", companyId: 11, password: "20426983", isFirstLogin: true },
+  "20430097@onboard.com": { role: "startup", name: "김건하 대표", companyId: 12, password: "20430097", isFirstLogin: true },
+  "20433275@onboard.com": { role: "startup", name: "이광록 대표", companyId: 13, password: "20433275", isFirstLogin: true },
+  "20430190@onboard.com": { role: "startup", name: "권태균 대표", companyId: 14, password: "20430190", isFirstLogin: true },
+  "20419158@onboard.com": { role: "startup", name: "신민준 대표", companyId: 15, password: "20419158", isFirstLogin: true },
+  "20427627@onboard.com": { role: "startup", name: "이남주 대표", companyId: 16, password: "20427627", isFirstLogin: true },
+  "20425790@onboard.com": { role: "startup", name: "최병진 대표", companyId: 17, password: "20425790", isFirstLogin: true },
+  "20431435@onboard.com": { role: "startup", name: "이준원 대표", companyId: 18, password: "20431435", isFirstLogin: true }
 };
 
 let currentUser = null; // Session storage
@@ -11,208 +33,381 @@ let currentUser = null; // Session storage
 let defaultCompanies = [
   {
     id: 1,
-    name: "(주)에이아이링크",
-    type: "초기(1년 미만)",
-    representative: "이영희",
-    repDesc: "이영희 대표",
-    invitationKey: "HN-LINK-2026",
-    establishmentDate: "2025-11-15",
-    address: "대전광역시 대덕구 한남로 70, 창업보육센터 302호",
-    contact: "010-1234-5678",
+    name: "주식회사 엑스알로보틱스",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "박지훈",
+    repDesc: "박지훈 대표 (과제번호: 20424601)",
+    invitationKey: "HN-XR-2026",
+    establishmentDate: "2025-05-23",
+    address: "",
+    contact: "",
     corpType: "법인사업자",
-    oneStopLink: "대전창조경제혁신센터 법률분야 매칭 연계 완료",
-    surveyData: {
-      contact: "010-1234-5678",
-      corpType: "법인사업자",
-      estDate: "2025-11-15",
-      address: "대전광역시 대덕구 한남로 70, 창업보육센터 302호",
-      sales: "12,000천원",
-      employees: "3명",
-      itemIntro: "빅데이터 기반의 중고차 이력 실시간 매칭 플랫폼",
-      itemProblem: "중고차 구매 시 허위 매물 및 차량 이력 정보의 비대칭 문제",
-      itemTarget: "합리적인 차량 소비를 원하는 2030 사회 초년생 직장인",
-      itemModel: "중고차 거래 건당 3% 중개 수수료 및 프리미엄 차량 검증 서비스 구독료",
-      stageProduct: "정식 제품/서비스 상용화 단계",
-      stageHasSales: "매출 발생 완료",
-      stageSummary: "특허 출원 1건 완료, 디자이너 외주 용역 계약 체결, 상반기 BM 검증 테스트 완료",
-      marketTarget: "국내 연간 20조원 규모의 중고차 온라인 거래 시장",
-      marketCompetitor: "헤이딜러, 케이카, 개인 중고차 직거래 커뮤니티",
-      marketDifferent: "인공지능 기반의 차량 사진 분석을 통한 사고 흔적 자동 검출 기술",
-      teamComp: "기획/개발 대표자 1인, 시니어 개발자 1인, 마케터 1인 (총 3인)",
-      teamCore: "중고차 업계 10년 경력의 도메인 지식 및 모바일 앱 풀스택 개발 역량",
-      teamNeeds: "대규모 고객 유치를 위한 그로스해킹 디지털 마케팅 전문가 보완 필요",
-      financeSource: "엔젤투자 유치 예정 또는 신용보증기금 혁신스타트업 융자 신청",
-      financeFixedcost: "고정비 완벽 파악 중",
-      financeRunway: "6개월 ~ 1년",
-      needPain: "1. 정부지원금 정산 증빙 처리 오류 2. 타깃 마케팅 채널 선택의 어려움 3. 시제품 완성 후 시장 반응 확인법",
-      needGoal: "비즈니스 모델(BM) 피벗 및 하반기 크라우드 펀딩 런칭 계획 수립",
-      needDeliverable: "수정된 사업계획서 IR 장표 및 디지털 인스타그램 마케팅 광고 실행 체크리스트",
-      customStrategy: "법인 설립 완료 상태로 특허 및 투자 계약서 중심의 자문 집중 지원 필요."
-    },
-    metrics: { sales: "12,000천원", employees: "3명", reStartup: "아니오" },
-    budget: { 
-      status: "safe",
-      checks: { m5: true, m6: true, m7: false, m8: false, m9: false, m10: false, m11: false, m12: false },
-      total: "50,000", execution: "32,500"
-    },
-    education: { hr: "이수", accounting: "이수", law: "대기", content: "창업에듀: 노무기초 및 정부지원금 집행기준 수강 완료 (드림비즈 추천)" },
-    monitoringDoc: "제출완료",
-    coachingCount: 3,
-    coachingLogs: [
-      { id: 101, type: "멘토링", field: "BM고도화", date: "2026-05-15", content: "비즈니스 모델 피칭 자료 점검 및 시장 포지셔닝 멘토링 진행" },
-      { id: 102, type: "교육", field: "노무", date: "2026-05-28", content: "노무 및 근로계약서 양식 실무 지도" },
-      { id: 103, type: "멘토링", field: "BM고도화", date: "2026-06-10", content: "투자유치 IR 기초 멘토링 진행" }
-    ],
-    chatMessages: [
-      { sender: "startup", text: "코치님, 노무 교육 링크 전송받은 것 학습 완료했습니다! 법률 분야 멘토링도 신청 가능한가요?", time: "오전 10:15" },
-      { sender: "coach", text: "네! 잘하셨습니다. 법률 멘토링은 다음주 수요일에 매칭 예정입니다.", time: "오전 10:30" }
-    ]
-  },
-  {
-    id: 2,
-    name: "그린에너지 솔루션",
-    type: "예비 창업기업",
-    representative: "김철수",
-    repDesc: "김철수 대표",
-    invitationKey: "HN-GREEN-2026",
-    establishmentDate: "2026-03-01",
-    address: "대전광역시 동구 동대전로 144",
-    contact: "010-5678-1234",
-    corpType: "예비창업자",
-    oneStopLink: "대기 (7월 중 대전테크노파크 매칭 예정)",
+    oneStopLink: "대기",
     surveyData: null,
-    metrics: { sales: "0원 (예비)", employees: "1명 (대표자)", reStartup: "예" },
-    budget: { 
-      status: "warn",
-      checks: { m5: true, m6: false, m7: false, m8: false, m9: false, m10: false, m11: false, m12: false },
-      total: "45,000", execution: "12,000"
-    },
-    education: { hr: "이수", accounting: "대기", law: "미이수", content: "창업에듀: 세무기초 실무 교육 영상 시청중" },
-    monitoringDoc: "작성중",
-    coachingCount: 2,
-    coachingLogs: [
-      { id: 201, type: "멘토링", field: "법률", date: "2026-05-20", content: "법인 설립 절차 및 특허 출원 상담 진행" },
-      { id: 202, type: "교육", field: "회계", date: "2026-06-05", content: "창업 필수 회계 기초 개념 설명 및 교육 영상 추천" }
-    ],
-    chatMessages: [
-      { sender: "startup", text: "세무 기장은 법인 설립 후 바로 해야 하나요?", time: "어제" },
-      { sender: "coach", text: "네, 매출이 아직 없더라도 기초적인 세무 신고 및 기장 처리가 안전합니다. 관련 가이드를 송부해드릴게요.", time: "어제" }
-    ]
-  },
-  {
-    id: 3,
-    name: "드림 소프트",
-    type: "초기(1년 미만)",
-    representative: "박민지",
-    repDesc: "박민지 대표",
-    invitationKey: "HN-DREAM-2026",
-    establishmentDate: "2025-08-20",
-    address: "대전광역시 서구 둔산서로 17",
-    contact: "010-9999-8888",
-    corpType: "개인사업자",
-    oneStopLink: "해당 없음",
-    surveyData: {
-      contact: "010-9999-8888",
-      corpType: "개인사업자",
-      estDate: "2025-08-20",
-      address: "대전광역시 서구 둔산서로 17",
-      sales: "45,000천원",
-      employees: "5명",
-      itemIntro: "소상공인을 위한 AI 기반 간편 급여/노무 관리 SaaS",
-      itemProblem: "매년 바뀌는 노무법과 복잡한 수당 계산으로 인한 소상공인의 시간 낭비 및 벌금 리스크",
-      itemTarget: "5인 미만 직원을 고용하고 있는 식음료 및 소매업 매장 점주",
-      itemModel: "월 9,900원 멤버십 정기 구독료",
-      stageProduct: "정식 제품/서비스 상용화 단계",
-      stageHasSales: "매출 발생 완료",
-      stageSummary: "대전 소재 프랜차이즈 가맹점 30개사 PoC(실증) 완료 및 월 구독 회원 10명 돌파",
-      marketTarget: "국내 300만 소상공인 사업체 시장",
-      marketCompetitor: "자비시, 알밤 등 수동 근무기록 앱",
-      marketDifferent: "별도 기기 설치 없는 모바일 GPS 간편 인증 및 노무사 자문 결합 서비스 제공",
-      teamComp: "대표(노무사 자격 보유) 1인, 풀스택 개발자 1인, 마케터 1인",
-      teamCore: "노무 도메인 전문 지식과 자체 특허 알고리즘 탑재 소프트웨어 신속 구현 능력",
-      teamNeeds: "초기 마케팅 예산 부족으로 효율적인 바이럴/SNS 마케팅 방법론 필요",
-      financeSource: "한남대 지원금 6천만 원 및 엔젤 매칭 펀드 신청 준비 중",
-      financeFixedcost: "고정비 완벽 파악 중",
-      financeRunway: "1년 이상",
-      needPain: "1. 유료 마케팅 전환 단가의 비효율성 2. 특허 등록 후 권리 침해 대응 방안",
-      needGoal: "효과적인 초기 고객 획득 마케팅 실행 및 지식재산권(IP) 보호 장치 마련",
-      needDeliverable: "소셜 퍼포먼스 마케팅 광고 카피 테스트 구조표 및 디자인 시나리오",
-      customStrategy: "교육 이수 상태 최상. BM 고도화와 고용 안정화에 중점을 둔 성장 전략 코칭 진행."
-    },
-    metrics: { sales: "45,000천원", employees: "5명", reStartup: "아니오" },
-    budget: { 
-      status: "safe",
-      checks: { m5: true, m6: true, m7: false, m8: false, m9: false, m10: false, m11: false, m12: false },
-      total: "60,000", execution: "48,000"
-    },
-    education: { hr: "이수", accounting: "이수", law: "이수", content: "창업에듀: 3대 핵심과목 및 법률 특약 계약 수강 완료" },
-    monitoringDoc: "제출완료",
-    coachingCount: 3,
-    coachingLogs: [
-      { id: 301, type: "교육", field: "회계", date: "2026-05-18", content: "정부지원금 집행 기준 및 증빙 처리 교육 실시" },
-      { id: 302, type: "멘토링", field: "노무", date: "2026-06-01", content: "개발자 고용 및 주52시간제 관련 노무 멘토링 진행" },
-      { id: 303, type: "멘토링", field: "마케팅", date: "2026-06-15", content: "글로벌 시장 진출 전략 3차 멘토링 진행" }
-    ],
-    chatMessages: [
-      { sender: "startup", text: "코치님 덕분에 필수 3대 교육 다 완료했습니다! 모니터링 자료 제출 드렸으니 피드백 부탁드립니다.", time: "오후 2:10" },
-      { sender: "coach", text: "확인했습니다. 훌륭히 잘 작성하셨네요. 이번주에 최종 검토해서 확정하겠습니다.", time: "오후 2:40" }
-    ]
-  },
-  {
-    id: 4,
-    name: "시즈모드",
-    type: "초기(1년 미만)",
-    representative: "최재성",
-    repDesc: "최재성 대표",
-    invitationKey: "HN-SIZ-2026",
-    establishmentDate: "2025-12-01",
-    address: "대전광역시 대덕구 오정로 66",
-    contact: "010-4444-5555",
-    corpType: "개인사업자",
-    oneStopLink: "대기 (지원센터 특허 전문가 매칭 요청 상태)",
-    surveyData: null,
-    metrics: { sales: "8,500천원", employees: "2명", reStartup: "아니오" },
-    budget: { 
-      status: "safe",
-      checks: { m5: true, m6: true, m7: false, m8: false, m9: false, m10: false, m11: false, m12: false },
-      total: "40,000", execution: "31,000"
-    },
-    education: { hr: "미이수", accounting: "대기", law: "미이수", content: "드림비즈: 필수 노무 근로 기준 교육 자료 전송" },
-    monitoringDoc: "미작성",
-    coachingCount: 1,
-    coachingLogs: [
-      { id: 401, type: "멘토링", field: "마케팅", date: "2026-06-03", content: "초기 메뉴 런칭에 따른 마케팅 프로모션 피드백 제공" }
-    ],
-    chatMessages: [
-      { sender: "coach", text: "대표님, 노무 및 세무 관련 기본 교육 이수가 지연되고 있습니다. 온라인 추천 코스 확인 부탁드립니다.", time: "그저께" }
-    ]
-  },
-  {
-    id: 5,
-    name: "카이빅테크",
-    type: "예비 창업기업",
-    representative: "황동욱",
-    repDesc: "황동욱 대표",
-    invitationKey: "HN-KAIVIC-2026",
-    establishmentDate: "사업자 미등록 (예비)",
-    address: "대전광역시 유성구 대학로 99",
-    contact: "010-8888-7777",
-    corpType: "예비창업자",
-    oneStopLink: "해당 없음",
-    surveyData: null,
-    metrics: { sales: "0원 (예비)", employees: "1명 (대표자)", reStartup: "예" },
-    budget: { 
-      status: "danger",
-      checks: { m5: false, m6: false, m7: false, m8: false, m9: false, m10: false, m11: false, m12: false },
-      total: "45,000", execution: "5,000"
-    },
-    education: { hr: "대기", accounting: "미이수", law: "미이수", content: "대기상태: 노무, 세무 기본 학습 과정 수강 신청 예정" },
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
     monitoringDoc: "미작성",
     coachingCount: 0,
     coachingLogs: [],
-    chatMessages: [
-      { sender: "startup", text: "안녕하세요 코치님, 이번주 첫 코칭 미팅 일정 확정 가능한가요?", time: "3일 전" }
-    ]
+    chatMessages: []
+  },
+  {
+    id: 2,
+    name: "주식회사 메이스온",
+    type: "예비 창업기업 (사업자 미등록)",
+    representative: "신상호",
+    repDesc: "신상호 대표 (과제번호: 20425162)",
+    invitationKey: "HN-MAIS-2026",
+    establishmentDate: "",
+    address: "",
+    contact: "",
+    corpType: "예비창업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 3,
+    name: "오영웅 (예비창업)",
+    type: "예비 창업기업 (사업자 미등록)",
+    representative: "오영웅",
+    repDesc: "오영웅 대표 (과제번호: 20418716)",
+    invitationKey: "HN-HERO-2026",
+    establishmentDate: "",
+    address: "",
+    contact: "",
+    corpType: "예비창업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 4,
+    name: "카고",
+    type: "예비 창업기업 (사업자 미등록)",
+    representative: "염준",
+    repDesc: "염준 대표 (과제번호: 20420729)",
+    invitationKey: "HN-CARGO-2026",
+    establishmentDate: "",
+    address: "",
+    contact: "",
+    corpType: "예비창업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 5,
+    name: "주식회사 쉘비빌",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "이준석",
+    repDesc: "이준석 대표 (과제번호: 20429473)",
+    invitationKey: "HN-SHELBY-2026",
+    establishmentDate: "2025-05-22",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 6,
+    name: "앱스터",
+    type: "예비 창업기업 (사업자 미등록)",
+    representative: "최성환",
+    repDesc: "최성환 대표 (과제번호: 20420909)",
+    invitationKey: "HN-APPSTER-2026",
+    establishmentDate: "",
+    address: "",
+    contact: "",
+    corpType: "예비창업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 7,
+    name: "트랜지언트랩",
+    type: "예비 창업기업 (사업자 미등록)",
+    representative: "이서진",
+    repDesc: "이서진 대표 (과제번호: 20417065)",
+    invitationKey: "HN-TRANS-2026",
+    establishmentDate: "",
+    address: "",
+    contact: "",
+    corpType: "예비창업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 8,
+    name: "주식회사 테리웰",
+    type: "예비 창업기업 (사업자 미등록)",
+    representative: "이수빈",
+    repDesc: "이수빈 대표 (과제번호: 20415562)",
+    invitationKey: "HN-TERI-2026",
+    establishmentDate: "",
+    address: "",
+    contact: "",
+    corpType: "예비창업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 9,
+    name: "주식회사 위노잇",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "정수민",
+    repDesc: "정수민 대표 (과제번호: 20411989)",
+    invitationKey: "HN-WINO-2026",
+    establishmentDate: "2025-12-29",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 10,
+    name: "지담산업",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "지세빈",
+    repDesc: "지세빈 대표 (과제번호: 20417505)",
+    invitationKey: "HN-GIDAM-2026",
+    establishmentDate: "2025-07-08",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 11,
+    name: "로컬웨이브",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "김영준",
+    repDesc: "김영준 대표 (과제번호: 20426983)",
+    invitationKey: "HN-LOCAL-2026",
+    establishmentDate: "2026-01-16",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 12,
+    name: "주식회사 사티부스",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "김건하",
+    repDesc: "김건하 대표 (과제번호: 20430097)",
+    invitationKey: "HN-SATI-2026",
+    establishmentDate: "2025-05-22",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 13,
+    name: "이광록 (예비창업)",
+    type: "예비 창업기업 (사업자 미등록)",
+    representative: "이광록",
+    repDesc: "이광록 대표 (과제번호: 20433275)",
+    invitationKey: "HN-GWANG-2026",
+    establishmentDate: "",
+    address: "",
+    contact: "",
+    corpType: "예비창업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 14,
+    name: "주식회사 소리",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "권태균",
+    repDesc: "권태균 대표 (과제번호: 20430190)",
+    invitationKey: "HN-SORI-2026",
+    establishmentDate: "2025-08-01",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 15,
+    name: "주식회사 액트",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "신민준",
+    repDesc: "신민준 대표 (과제번호: 20419158)",
+    invitationKey: "HN-ACT-2026",
+    establishmentDate: "2025-12-15",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 16,
+    name: "뉴로모먼트 주식회사",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "이남주",
+    repDesc: "이남주 대표 (과제번호: 20427627)",
+    invitationKey: "HN-NEURO-2026",
+    establishmentDate: "2025-07-01",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 17,
+    name: "(주)그린에스텍",
+    type: "초기 창업기업 (사업자 등록 후 1~3년 이하)",
+    representative: "최병진",
+    repDesc: "최병진 대표 (과제번호: 20425790)",
+    invitationKey: "HN-GREEN-2026",
+    establishmentDate: "2025-12-15",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
+  },
+  {
+    id: 18,
+    name: "주식회사 에이치엔로보틱스",
+    type: "초기 창업기업 (사업자 등록 후 1~4년 이하)",
+    representative: "이준원",
+    repDesc: "이준원 대표 (과제번호: 20431435)",
+    invitationKey: "HN-HNROBO-2026",
+    establishmentDate: "2026-01-01",
+    address: "",
+    contact: "",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
   }
 ];
 
@@ -402,38 +597,66 @@ async function loadCloudData() {
       throw new Error("HTTP error " + response.status);
     }
     
-    const resData = await response.json();
+
+      const resData = await response.json();
     if (resData && resData.status === "success" && resData.data) {
       const data = resData.data;
-      if (data.USERS) {
-        USERS = data.USERS;
-        localStorage.setItem("USERS", JSON.stringify(USERS));
-        
-
-      }
-      if (data.COMPANIES) {
-        companies = data.COMPANIES;
-        localStorage.setItem("COMPANIES", JSON.stringify(companies));
-      }
-      if (data.MILESTONES) {
-        milestones = data.MILESTONES;
-        localStorage.setItem("MILESTONES", JSON.stringify(milestones));
-      }
-      if (data.coachName) {
-        coachName = data.coachName;
-        localStorage.setItem("COACH_NAME", coachName);
-      }
-      if (data.eduNames) {
-        eduNames = data.eduNames;
-        localStorage.setItem("EDU_NAMES", JSON.stringify(eduNames));
-      }
-      if (data.notices) {
-        notices = data.notices;
-        localStorage.setItem("NOTICES", JSON.stringify(notices));
+      
+      // If the cloud database is old, ignore it and force overwrite!
+      if (data.USERS && !data.USERS["20424601@onboard.com"]) {
+        console.log("🔄 구식 클라우드 데이터 감지. 신규 18개사 데이터로 클라우드 덮어쓰기를 수행합니다.");
+        localStorage.removeItem("COMPANIES");
+        localStorage.removeItem("USERS");
+        companies = defaultCompanies;
+        USERS = {
+          "osy0922@hnu.kr": { role: "coach", name: "정세정 주임연구원", companyId: null, password: "osy0922" },
+          "20424601@onboard.com": { role: "startup", name: "박지훈 대표", companyId: 1, password: "20424601", isFirstLogin: true },
+          "20425162@onboard.com": { role: "startup", name: "신상호 대표", companyId: 2, password: "20425162", isFirstLogin: true },
+          "20418716@onboard.com": { role: "startup", name: "오영웅 대표", companyId: 3, password: "20418716", isFirstLogin: true },
+          "20420729@onboard.com": { role: "startup", name: "염준 대표", companyId: 4, password: "20420729", isFirstLogin: true },
+          "20429473@onboard.com": { role: "startup", name: "이준석 대표", companyId: 5, password: "20429473", isFirstLogin: true },
+          "20420909@onboard.com": { role: "startup", name: "최성환 대표", companyId: 6, password: "20420909", isFirstLogin: true },
+          "20417065@onboard.com": { role: "startup", name: "이서진 대표", companyId: 7, password: "20417065", isFirstLogin: true },
+          "20415562@onboard.com": { role: "startup", name: "이수빈 대표", companyId: 8, password: "20415562", isFirstLogin: true },
+          "20411989@onboard.com": { role: "startup", name: "정수민 대표", companyId: 9, password: "20411989", isFirstLogin: true },
+          "20417505@onboard.com": { role: "startup", name: "지세빈 대표", companyId: 10, password: "20417505", isFirstLogin: true },
+          "20426983@onboard.com": { role: "startup", name: "김영준 대표", companyId: 11, password: "20426983", isFirstLogin: true },
+          "20430097@onboard.com": { role: "startup", name: "김건하 대표", companyId: 12, password: "20430097", isFirstLogin: true },
+          "20433275@onboard.com": { role: "startup", name: "이광록 대표", companyId: 13, password: "20433275", isFirstLogin: true },
+          "20430190@onboard.com": { role: "startup", name: "권태균 대표", companyId: 14, password: "20430190", isFirstLogin: true },
+          "20419158@onboard.com": { role: "startup", name: "신민준 대표", companyId: 15, password: "20419158", isFirstLogin: true },
+          "20427627@onboard.com": { role: "startup", name: "이남주 대표", companyId: 16, password: "20427627", isFirstLogin: true },
+          "20425790@onboard.com": { role: "startup", name: "최병진 대표", companyId: 17, password: "20425790", isFirstLogin: true },
+          "20431435@onboard.com": { role: "startup", name: "이준원 대표", companyId: 18, password: "20431435", isFirstLogin: true }
+        };
+        saveToLocalStorage(); // Trigger syncData post to overwrite!
+      } else {
+        if (data.USERS) {
+          USERS = data.USERS;
+          localStorage.setItem("USERS", JSON.stringify(USERS));
+        }
+        if (data.COMPANIES) {
+          companies = data.COMPANIES;
+          localStorage.setItem("COMPANIES", JSON.stringify(companies));
+        }
+        if (data.MILESTONES) {
+          milestones = data.MILESTONES;
+          localStorage.setItem("MILESTONES", JSON.stringify(milestones));
+        }
+        if (data.coachName) {
+          coachName = data.coachName;
+          localStorage.setItem("COACH_NAME", coachName);
+        }
+        if (data.eduNames) {
+          eduNames = data.eduNames;
+          localStorage.setItem("EDU_NAMES", JSON.stringify(eduNames));
+        }
+        if (data.notices) {
+          notices = data.notices;
+          localStorage.setItem("NOTICES", JSON.stringify(notices));
+        }
       }
       console.log("☁️ 구글 스프레드시트 클라우드 데이터 동기화 완료.");
-      
-      // 불러온 데이터를 UI에 동적 바인딩하기 위해 필요한 렌더링 호출
       if (currentUser) {
         renderDashboard();
         renderMilestones();
@@ -503,8 +726,6 @@ linkGoLogin.addEventListener("click", (e) => {
   cardLogin.style.display = "block";
 });
 
-
-
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const emailInput = loginEmail.value.trim();
@@ -518,11 +739,48 @@ loginForm.addEventListener("submit", (e) => {
 
   if (matchedUserKey && USERS[matchedUserKey].password === password) {
     currentUser = USERS[matchedUserKey];
+    
+    // Check if it's first login
+    if (currentUser.isFirstLogin) {
+      cardLogin.style.display = "none";
+      document.getElementById("card-change-password").style.display = "block";
+      return;
+    }
+    
     enterPlatform();
   } else {
     alert("❌ 아이디(대표자명) 또는 비밀번호가 올바르지 않습니다.");
   }
 });
+
+const changePasswordForm = document.getElementById("change-password-form");
+if (changePasswordForm) {
+  changePasswordForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const newPassword = document.getElementById("new-password").value.trim();
+    const newPasswordConfirm = document.getElementById("new-password-confirm").value.trim();
+    
+    if (newPassword !== newPasswordConfirm) {
+      alert("❌ 비밀번호가 일치하지 않습니다. 다시 입력해 주세요.");
+      return;
+    }
+    
+    const currentUserKey = Object.keys(USERS).find(key => USERS[key].name === currentUser.name && USERS[key].companyId === currentUser.companyId);
+    if (currentUserKey) {
+      USERS[currentUserKey].password = newPassword;
+      delete USERS[currentUserKey].isFirstLogin;
+      
+      currentUser = USERS[currentUserKey];
+      saveToLocalStorage();
+      
+      alert("🎉 비밀번호가 안전하게 변경되었습니다!");
+      document.getElementById("card-change-password").style.display = "none";
+      enterPlatform();
+    } else {
+      alert("❌ 사용자 정보를 찾을 수 없습니다.");
+    }
+  });
+}
 
 // --- SIGNUP ACTION ---
 signupForm.addEventListener("submit", (e) => {
@@ -1358,14 +1616,14 @@ companyForm.addEventListener("submit", (e) => {
   const repDesc = document.getElementById("c-rep-desc").value;
   const password = document.getElementById("c-password").value;
   const keyVal = document.getElementById("c-key").value.toUpperCase();
-  const sales = document.getElementById("c-sales").value;
-  const emp = document.getElementById("c-emp").value;
-  const estDate = document.getElementById("c-est-date").value;
-  const address = document.getElementById("c-address").value;
-  const contactVal = document.getElementById("c-contact").value;
+  const sales = document.getElementById("c-sales").value.trim() || "0원 (대기)";
+  const emp = document.getElementById("c-emp").value.trim() || "대기";
+  const estDate = document.getElementById("c-est-date").value.trim() || "";
+  const address = document.getElementById("c-address").value.trim() || "";
+  const contactVal = document.getElementById("c-contact").value.trim() || "";
   const corpTypeVal = document.getElementById("c-corp-type").value;
   const restartup = document.getElementById("c-restartup").value;
-  const onestopVal = document.getElementById("c-onestop").value;
+  const onestopVal = document.getElementById("c-onestop").value.trim() || "대기";
 
   const bStatus = document.getElementById("c-budget-status").value;
 
@@ -1643,9 +1901,9 @@ function renderSurveySection() {
     document.getElementById("sv-address").value = targetCompany.surveyData.address || targetCompany.address || "";
     document.getElementById("sv-sales").value = targetCompany.surveyData.sales || "매출 미발생 (R&D, 기술 개발 및 제품 기획 단계)";
     document.getElementById("sv-employees").value = targetCompany.surveyData.employees || "0명 (단독 창업)";
+    document.getElementById("sv-restartup").value = targetCompany.surveyData.reStartup || (targetCompany.metrics && targetCompany.metrics.reStartup) || "아니오";
 
     document.getElementById("sv-item-intro").value = targetCompany.surveyData.itemIntro || "";
-    document.getElementById("sv-item-problem").value = targetCompany.surveyData.itemProblem || "";
     document.getElementById("sv-item-target").value = targetCompany.surveyData.itemTarget || "";
     document.getElementById("sv-item-model").value = targetCompany.surveyData.itemModel || "";
 
@@ -1671,6 +1929,8 @@ function renderSurveySection() {
     document.getElementById("sv-need-pain").value = targetCompany.surveyData.needPain || "";
     document.getElementById("sv-need-goal").value = targetCompany.surveyData.needGoal || "";
     document.getElementById("sv-need-deliverable").value = targetCompany.surveyData.needDeliverable || "";
+    document.getElementById("sv-edu-content").value = targetCompany.surveyData.eduContent || "";
+    document.getElementById("sv-edu-method").value = targetCompany.surveyData.eduMethod || "온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)";
     strategyTextarea.value = targetCompany.surveyData.customStrategy || "";
   } else {
     // Fill basic details from existing profile
@@ -1680,9 +1940,9 @@ function renderSurveySection() {
     document.getElementById("sv-address").value = targetCompany.address || "";
     document.getElementById("sv-sales").value = "매출 미발생 (R&D, 기술 개발 및 제품 기획 단계)";
     document.getElementById("sv-employees").value = "0명 (단독 창업)";
+    document.getElementById("sv-restartup").value = (targetCompany.metrics && targetCompany.metrics.reStartup) || "아니오";
 
     document.getElementById("sv-item-intro").value = "";
-    document.getElementById("sv-item-problem").value = "";
     document.getElementById("sv-item-target").value = "";
     document.getElementById("sv-item-model").value = "";
 
@@ -1707,6 +1967,8 @@ function renderSurveySection() {
     document.getElementById("sv-need-pain").value = "";
     document.getElementById("sv-need-goal").value = "";
     document.getElementById("sv-need-deliverable").value = "";
+    document.getElementById("sv-edu-content").value = "";
+    document.getElementById("sv-edu-method").value = "온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)";
     strategyTextarea.value = "";
   }
 }
@@ -1730,9 +1992,9 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
   const address = document.getElementById("sv-address").value;
   const sales = document.getElementById("sv-sales").value;
   const emp = document.getElementById("sv-employees").value;
+  const restartup = document.getElementById("sv-restartup").value;
 
   const itemIntro = document.getElementById("sv-item-intro").value;
-  const itemProblem = document.getElementById("sv-item-problem").value;
   const itemTarget = document.getElementById("sv-item-target").value;
   const itemModel = document.getElementById("sv-item-model").value;
 
@@ -1759,6 +2021,8 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
   const needPain = document.getElementById("sv-need-pain").value;
   const needGoal = document.getElementById("sv-need-goal").value;
   const needDeliverable = document.getElementById("sv-need-deliverable").value;
+  const eduContent = document.getElementById("sv-edu-content").value;
+  const eduMethod = document.getElementById("sv-edu-method").value;
   const strategy = document.getElementById("sv-strategy").value;
 
   // Sync basic metrics to company model
@@ -1768,6 +2032,7 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
   targetCompany.address = address;
   targetCompany.metrics.sales = sales;
   targetCompany.metrics.employees = emp;
+  targetCompany.metrics.reStartup = restartup;
   
   targetCompany.surveyData = {
     contact,
@@ -1776,8 +2041,8 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
     address,
     sales,
     employees: emp,
+    reStartup: restartup,
     itemIntro,
-    itemProblem,
     itemTarget,
     itemModel,
     stageProduct,
@@ -1793,6 +2058,8 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
     needPain,
     needGoal,
     needDeliverable,
+    eduContent,
+    eduMethod,
     customStrategy: strategy
   };
 
@@ -1815,8 +2082,8 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
         address: address,
         sales: sales,
         employees: emp,
+        reStartup: restartup,
         itemIntro: itemIntro,
-        itemProblem: itemProblem,
         itemTarget: itemTarget,
         itemModel: itemModel,
         stageProduct: stageProduct,
@@ -1834,6 +2101,8 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
         needPain: needPain,
         needGoal: needGoal,
         needDeliverable: needDeliverable,
+        eduContent: eduContent,
+        eduMethod: eduMethod,
         customStrategy: strategy
       })
     }).then(() => {
@@ -1921,7 +2190,6 @@ function renderReportSection() {
   if (activeCompany.surveyData) {
     const sv = activeCompany.surveyData;
     document.getElementById("rep-sv-intro").innerText = sv.itemIntro || "-";
-    document.getElementById("rep-sv-problem").innerText = sv.itemProblem || "-";
     document.getElementById("rep-sv-target").innerText = sv.itemTarget || "-";
     document.getElementById("rep-sv-model").innerText = sv.itemModel || "-";
     document.getElementById("rep-sv-product-stage").innerText = sv.stageProduct || "-";
@@ -1936,15 +2204,17 @@ function renderReportSection() {
     document.getElementById("rep-sv-pains").innerText = sv.needPain || "-";
     document.getElementById("rep-sv-goals").innerText = sv.needGoal || "-";
     document.getElementById("rep-sv-deliverable").innerText = sv.needDeliverable || "-";
+    document.getElementById("rep-sv-edu-content").innerText = sv.eduContent || "-";
+    document.getElementById("rep-sv-edu-method").innerText = sv.eduMethod || "-";
     document.getElementById("rep-survey-strategy").innerText = sv.customStrategy || "코치 미작성 상태";
   } else {
     const emptyFields = [
-      "rep-sv-intro", "rep-sv-problem", "rep-sv-target", "rep-sv-model",
+      "rep-sv-intro", "rep-sv-target", "rep-sv-model",
       "rep-sv-product-stage", "rep-sv-sales-stage", "rep-sv-stage-summary",
       "rep-sv-market-size",
       "rep-sv-team-comp", "rep-sv-team-core", "rep-sv-team-needs",
       "rep-sv-runway", "rep-sv-funding", "rep-sv-pains", "rep-sv-goals",
-      "rep-sv-deliverable"
+      "rep-sv-deliverable", "rep-sv-edu-content", "rep-sv-edu-method"
     ];
     emptyFields.forEach(id => {
       document.getElementById(id).innerText = "사전조사 미제출";
