@@ -443,7 +443,7 @@ let currentAttachedFile = null;
 let selectedReportType = "1st"; // "1st" | "2nd" | "final"
 
 // --- GOOGLE SCRIPT URL FOR FREE API CONNECTION ---
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_riqIF6UnfIN4aH3doKzI2lTggdDrALo25MsT03iDmi3X42anKBQCQX0rCnEKjV6r/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWU-lLSIlQsZ1F3YRR4rlE658d1mXAu71PJDlPRaYZH35dRrK3VsKs-sMJhEKPnQey/exec";
 
 
 // --- DOM ELEMENTS ---
