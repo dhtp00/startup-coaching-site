@@ -718,6 +718,15 @@ async function loadCloudData() {
       if (currentUser) {
         renderDashboard();
         renderMilestones();
+        // Render current active tab content to keep UI updated in real-time
+        const chatSection = document.getElementById("section-chat");
+        if (chatSection && chatSection.classList.contains("active")) {
+          renderChatSection();
+        }
+        const reportSection = document.getElementById("section-report");
+        if (reportSection && reportSection.classList.contains("active")) {
+          renderReportSection();
+        }
       }
     }
   } catch (err) {
@@ -729,9 +738,17 @@ async function loadCloudData() {
   }
 }
 
-// 최초 구동 시 클라우드 동기화 개시
+// 최초 구동 시 클라우드 동기화 개시 및 백그라운드 실시간 동기화 루프 작동
 window.addEventListener("DOMContentLoaded", () => {
   loadCloudData();
+  
+  // 10초마다 백그라운드에서 실시간 클라우드 동기화 수행 (채팅 피드 실시간 반영용)
+  setInterval(async () => {
+    if (currentUser && !isSyncingCloud) {
+      console.log("🔄 백그라운드 클라우드 데이터 실시간 동기화 중...");
+      await loadCloudData();
+    }
+  }, 10000);
 });
 
 function saveToLocalStorage() {

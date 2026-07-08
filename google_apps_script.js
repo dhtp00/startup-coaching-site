@@ -31,8 +31,7 @@ function doGet(e) {
     status: "success",
     data: JSON.parse(jsonStr)
   }))
-  .setMimeType(ContentService.MimeType.JSON)
-  .setHeader("Access-Control-Allow-Origin", "*");
+  .setMimeType(ContentService.MimeType.JSON);
 }
 
 // POST 요청 처리 (데이터 저장 및 파일 업로드)
@@ -67,8 +66,7 @@ function doPost(e) {
         status: "success",
         message: "Data synchronized successfully"
       }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*");
+      .setMimeType(ContentService.MimeType.JSON);
     }
     
     // 2. 구글 드라이브 지정 폴더 파일 업로드 처리
@@ -94,8 +92,7 @@ function doPost(e) {
         fileUrl: file.getUrl(),
         message: "File uploaded to Google Drive successfully!"
       }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*");
+      .setMimeType(ContentService.MimeType.JSON);
     }
     
     // 3. 설문조사 단순 연동 응답 처리 (백업용)
@@ -104,24 +101,21 @@ function doPost(e) {
         status: "success",
         message: "Survey received"
       }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*");
+      .setMimeType(ContentService.MimeType.JSON);
     }
     
     return ContentService.createTextOutput(JSON.stringify({
       status: "error",
       message: "Unknown action"
     }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader("Access-Control-Allow-Origin", "*");
+    .setMimeType(ContentService.MimeType.JSON);
     
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({
       status: "error",
       message: err.toString()
     }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader("Access-Control-Allow-Origin", "*");
+    .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
