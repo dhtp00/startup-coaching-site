@@ -436,7 +436,7 @@ let defaultCompanies = [
 let companies = JSON.parse(localStorage.getItem("COMPANIES")) || defaultCompanies;
 
 // --- FORCE DATA RESET IF OLD DEMO DATA DETECTED ---
-const hasOldDemoData = companies.some(c => c.name.includes("에이아이링크") || c.name.includes("그린에너지") || c.name.includes("드림 소프트"));
+const hasOldDemoData = companies.some(c => c.name.includes("에이아이링크") || c.name.includes("그린에너지") || c.name.includes("드림 소프트")) || companies.length < 19;
 if (hasOldDemoData) {
   console.log("🧹 구식 데모 데이터 감지: 신규 18개 기업 데이터로 강제 초기화를 수행합니다.");
   localStorage.removeItem("COMPANIES");
@@ -464,6 +464,8 @@ if (hasOldDemoData) {
     "20431435@onboard.com": { role: "startup", name: "이준원 대표", companyId: 18, password: "20431435", isFirstLogin: true },
     "0426298510@onboard.com": { role: "startup", name: "오세연 대표", companyId: 19, password: "0426298510", isFirstLogin: true }
   };
+  localStorage.setItem("COMPANIES", JSON.stringify(companies));
+  localStorage.setItem("USERS", JSON.stringify(USERS));
 }
 
 // --- CONFIG DATA WITH LOCAL STORAGE & CLOUD DB ---
