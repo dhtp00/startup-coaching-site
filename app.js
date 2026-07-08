@@ -1744,6 +1744,7 @@ function renderSurveySection() {
   const strategyContainer = document.getElementById("survey-strategy-container");
   const strategyTextarea = document.getElementById("sv-strategy");
   const submitBtn = document.getElementById("btn-submit-survey");
+  const saveDraftBtn = document.getElementById("btn-save-draft");
   
   let targetCompany = null;
   if (currentUser.role === "coach") {
@@ -1771,16 +1772,19 @@ function renderSurveySection() {
     submitBtn.style.display = "inline-block";
     submitBtn.disabled = false;
     submitBtn.innerText = "💾 코치 맞춤형 전략 저장";
+    if (saveDraftBtn) saveDraftBtn.style.display = "none";
     document.getElementById("survey-startup-info").innerHTML = `<strong>ℹ️ 안내(코치용):</strong> 해당 기업의 사전 실태조사 진단 결과를 분석하고 하단에 코치 맞춤형 지원 전략을 작성/수정해 주세요.`;
   } else {
     // 스타트업인 경우
-    if (targetCompany.surveyData) {
-      // 이미 제출 완료했으면 모든 필드 비활성화 및 버튼 숨김
+    const isFinalSubmitted = targetCompany.surveyData && !targetCompany.surveyData.isDraft;
+    if (isFinalSubmitted) {
+      // 이미 최종 제출 완료했으면 모든 필드 비활성화 및 버튼 숨김
       allInputs.forEach(input => input.disabled = true);
       submitBtn.style.display = "none";
+      if (saveDraftBtn) saveDraftBtn.style.display = "none";
       document.getElementById("survey-startup-info").innerHTML = `<strong>✔️ 안내:</strong> 사전 조사가 성공적으로 제출되었습니다. 제출 완료된 서식은 수정이 불가능합니다.`;
     } else {
-      // 아직 미제출 상태면 작성 가능
+      // 아직 미제출 또는 임시저장 상태면 작성 가능
       allInputs.forEach(input => {
         if (input.id === "sv-strategy") {
           input.disabled = true; // 코치 기재란은 작성 불가
@@ -1791,7 +1795,8 @@ function renderSurveySection() {
       submitBtn.style.display = "inline-block";
       submitBtn.disabled = false;
       submitBtn.innerText = "📝 사전 조사 답변 제출";
-      document.getElementById("survey-startup-info").innerHTML = `<strong>ℹ️ 안내:</strong> 본 설문조사는 기업의 현재 역량을 정확하게 진단하고 맞춤형 성장 전략을 수립하기 위한 서식입니다.`;
+      if (saveDraftBtn) saveDraftBtn.style.display = "inline-block";
+      document.getElementById("survey-startup-info").innerHTML = `<strong>ℹ️ 안내:</strong> 본 설문조사는 기업의 현재 역량을 정확하게 진단하고 맞춤형 성장 전략을 수립하기 위한 서식입니다. (작성 중 '임시 저장'이 가능합니다)`;
     }
   }
 
@@ -2012,6 +2017,92 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
 
   renderSurveySection();
 });
+
+// Save Survey Draft Listener
+const btnSaveDraftEl = document.getElementById("btn-save-draft");
+if (btnSaveDraftEl) {
+  btnSaveDraftEl.addEventListener("click", () => {
+    let targetCompany = null;
+    if (currentUser.role === "coach") {
+      targetCompany = companies.find(c => c.id === selectedCompanyId) || companies[0];
+    } else {
+      targetCompany = companies.find(c => c.id === currentUser.companyId);
+    }
+
+    if (!targetCompany) return;
+
+    const contact = document.getElementById("sv-contact").value;
+    const corpType = document.getElementById("sv-corp-type").value;
+    const estDate = document.getElementById("sv-est-date").value;
+    const address = document.getElementById("sv-address").value;
+    const sales = document.getElementById("sv-sales").value;
+    const emp = document.getElementById("sv-employees").value;
+    const restartup = document.getElementById("sv-restartup").value;
+
+    const itemIntro = document.getElementById("sv-item-intro").value;
+    const itemTarget = document.getElementById("sv-item-target").value;
+    const itemModel = document.getElementById("sv-item-model").value;
+
+    const marketTarget = document.getElementById("sv-market-target").value;
+
+    const teamComp = document.getElementById("sv-team-comp").value;
+    const teamCore = document.getElementById("sv-team-core").value;
+    const teamNeeds = document.getElementById("sv-team-needs").value;
+
+    const checkedSources = [];
+    document.querySelectorAll("input[name='sv-finance-source-chk']:checked").forEach(chk => {
+      checkedSources.push(chk.value);
+    });
+    const financeSource = checkedSources.join(", ") || "없음";
+
+    const financeFixedcost = document.getElementById("sv-finance-fixedcost").value;
+    const financeRunway = document.getElementById("sv-finance-runway").value;
+
+    const needPain = document.getElementById("sv-need-pain").value;
+    const needGoal = document.getElementById("sv-need-goal").value;
+    const needDeliverable = document.getElementById("sv-need-deliverable").value;
+    const eduContent = document.getElementById("sv-edu-content").value;
+    
+    const checkedEduMethods = [];
+    document.querySelectorAll("input[name='sv-edu-method-chk']:checked").forEach(chk => {
+      checkedEduMethods.push(chk.value);
+    });
+    const eduMethod = checkedEduMethods.join(", ") || "없음";
+    const strategy = document.getElementById("sv-strategy").value;
+
+    // Save as draft
+    targetCompany.surveyData = {
+      isDraft: true,
+      contact,
+      corpType,
+      estDate,
+      address,
+      sales,
+      employees: emp,
+      reStartup: restartup,
+      itemIntro,
+      itemTarget,
+      itemModel,
+      marketTarget,
+      teamComp,
+      teamCore,
+      teamNeeds,
+      financeSource,
+      financeFixedcost,
+      financeRunway,
+      needPain,
+      needGoal,
+      needDeliverable,
+      eduContent,
+      eduMethod,
+      customStrategy: strategy
+    };
+
+    saveToLocalStorage();
+    alert("💾 사전 조사 내용이 임시 저장되었습니다!\n\n이제 페이지를 새로고침하거나 다른 탭으로 이동해도 작성 중인 내용이 그대로 복구됩니다.");
+    renderSurveySection();
+  });
+}
 
 // REPORT SECTION RENDERING
 function renderReportSection() {
