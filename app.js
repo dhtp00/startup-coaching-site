@@ -536,6 +536,8 @@ const sectionEdu = document.getElementById("section-edu");
 const sectionSurvey = document.getElementById("section-survey");
 const sectionReport = document.getElementById("section-report");
 const sectionSetting = document.getElementById("section-setting"); // 설정 추가
+const surveyCompanySelect = document.getElementById("survey-company-select");
+const surveyCompanySelectContainer = document.getElementById("survey-company-select-container");
 
 const mainHeaderTitle = document.getElementById("main-header-title");
 
@@ -1748,9 +1750,27 @@ function renderSurveySection() {
   
   let targetCompany = null;
   if (currentUser.role === "coach") {
+    if (surveyCompanySelectContainer) {
+      surveyCompanySelectContainer.style.display = "flex";
+    }
+    if (surveyCompanySelect) {
+      surveyCompanySelect.innerHTML = "";
+      companies.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.innerText = c.name;
+        if (c.id === selectedCompanyId) {
+          opt.selected = true;
+        }
+        surveyCompanySelect.appendChild(opt);
+      });
+    }
     targetCompany = companies.find(c => c.id === selectedCompanyId) || companies[0];
     strategyContainer.style.display = "flex";
   } else {
+    if (surveyCompanySelectContainer) {
+      surveyCompanySelectContainer.style.display = "none";
+    }
     targetCompany = companies.find(c => c.id === currentUser.companyId);
     strategyContainer.style.display = "flex";
   }
@@ -2210,6 +2230,14 @@ document.getElementById("report-company-select").addEventListener("change", (e) 
   selectedCompanyId = parseInt(e.target.value);
   renderReportSection();
 });
+
+// Dropdown Change listener in Survey view
+if (surveyCompanySelect) {
+  surveyCompanySelect.addEventListener("change", (e) => {
+    selectedCompanyId = parseInt(e.target.value);
+    renderSurveySection();
+  });
+}
 
 // Print Button
 document.getElementById("btn-print-report").addEventListener("click", () => {
