@@ -413,42 +413,16 @@
               <input type="text" id="sv-item-model" required>
             </div>
 
-            <!-- 3. 현재 단계·성과 -->
-            <div class="survey-section-title">3. 현재 단계 및 주요 성과 (Current Stage & Milestones)</div>
-            <div class="survey-grid-2">
-              <div class="form-group">
-                <label for="sv-stage-product">제품/기술 개발 단계 (하나만 선택)</label>
-                <select id="sv-stage-product" required>
-                  <option value="아이디어 및 원천 기술 기획 단계">아이디어 및 원천 기술 기획 단계</option>
-                  <option value="PoC(기술 검증) 및 MVP(시제품) 개발 단계">PoC(기술 검증) 및 MVP(시제품) 개발 단계</option>
-                  <option value="정식 제품 상용화 및 양산 준비 단계">정식 제품 상용화 및 양산 준비 단계</option>
-                  <option value="스케일업 및 글로벌 진출 단계">스케일업 및 글로벌 진출 단계</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="sv-stage-has-sales">실제 매출 발생 여부 (하나만 선택)</label>
-                <select id="sv-stage-has-sales" required>
-                  <option value="매출 미발생 (기술 개발 / R&D 진행 중)">매출 미발생 (기술 개발 / R&D 진행 중)</option>
-                  <option value="매출 발생 완료 (수익 실현 및 시장 진입 상태)">매출 발생 완료 (수익 실현 및 시장 진입 상태)</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group" style="margin-top: 12px; margin-bottom: 12px;">
-              <label for="sv-stage-summary">정부지원사업 및 창업 교육 참여 이력 (최근 1년 이내)</label>
-              <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(연계 지원 및 중복 수혜 조율을 위해 필요합니다. 예: 예비/초기창업패키지 수행 중, 디딤돌 R&D 수행 중, ○○대 창업 지원 프로그램 수료 등)</span>
-              <textarea id="sv-stage-summary" rows="2" required></textarea>
-            </div>
-
-            <!-- 4. 시장 인식 -->
-            <div class="survey-section-title">4. 목표 시장 인식 (Target Market)</div>
+            <!-- 3. 목표 시장 인식 -->
+            <div class="survey-section-title">3. 목표 시장 인식 (Target Market)</div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-market-target">목표하는 핵심 타깃 시장 범위</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(정확한 TAM-SAM-SOM 수치 대신, 현재 제품/기술을 적용하고자 하는 핵심 타깃 시장의 성격과 범위를 적어주세요. 예시: 국내 생성형 AI 기반의 B2B SaaS 마케팅 솔루션 시장 등)</span>
               <input type="text" id="sv-market-target" required>
             </div>
 
-            <!-- 5. 팀 구성·역량 -->
-            <div class="survey-section-title">5. 팀 구성 및 역량 (Team Structure)</div>
+            <!-- 4. 팀 구성·역량 -->
+            <div class="survey-section-title">4. 팀 구성 및 역량 (Team Structure)</div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-team-comp">핵심 팀 구성원 분포 (역할 분담)</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 대표 1명(기획/R&D 총괄), CTO 1명(AI 알고리즘 개발), 팀원 2명(하드웨어 설계) 등)</span>
@@ -465,8 +439,8 @@
               <input type="text" id="sv-team-needs" required>
             </div>
 
-            <!-- 6. 자금·운영 -->
-            <div class="survey-section-title">6. 자금 조달 및 운영 계획 (Funding & Runway)</div>
+            <!-- 5. 자금 조달 및 운영 계획 -->
+            <div class="survey-section-title">5. 자금 조달 및 운영 계획 (Funding & Runway)</div>
             <div class="form-group" style="margin-bottom: 16px;">
               <label style="margin-bottom: 8px; display:block;">창업 정부지원금 외 추가적인 자금 조달 계획 (복수 선택 가능)</label>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -495,8 +469,8 @@
               </div>
             </div>
 
-            <!-- 7. 멘토링 니즈 -->
-            <div class="survey-section-title">7. 멘토링 니즈 (Mentoring Requirements)</div>
+            <!-- 6. 멘토링 니즈 -->
+            <div class="survey-section-title">6. 멘토링 니즈 (Mentoring Requirements)</div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-need-pain">사업을 진행하며 느끼는 가장 큰 애로사항 (고민 1~3개)</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 기술 인력 채용, 특허 출원 및 분쟁, 투자 유치 전략 수립, 대기업 PoC 연계 등)</span>
@@ -512,8 +486,8 @@
               <input type="text" id="sv-need-deliverable" required>
             </div>
 
-            <!-- 8. 교육 분야 수요 조사 -->
-            <div class="survey-section-title">8. 교육 분야 수요 조사 (Educational Needs)</div>
+            <!-- 7. 교육 분야 수요 조사 -->
+            <div class="survey-section-title">7. 교육 분야 수요 조사 (Educational Needs)</div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-edu-content">희망/필요 교육 콘텐츠 (필요한 창업 역량 교육 주제)</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 정부지원사업 정산 실무, 투자유치/IR, 특허/지식재산권, 마케팅/영업, 세무/회계 등)</span>
@@ -574,7 +548,7 @@
           <div class="report-header">
             <span class="report-title-badge">한남대학교 창업지원단 Onboard</span>
             <h2 style="font-size: 1.6rem; letter-spacing: -0.5px; color: #1a202c; font-weight: 800;">창업기업별 온보딩 및 모니터링 종합 보고서</h2>
-            <p style="font-size: 0.85rem; color: #718096; margin-top: 6px;">발행일자: <span id="report-print-date">-</span> | 작성자: 한남대 창업지원단 전담코치 정세정 주임연구원</p>
+            <p style="font-size: 0.85rem; color: #718096; margin-top: 6px;">발행일자: <span id="report-print-date">-</span> | 작성자: 한남대 창업지원단 전담코치 오세연</p>
           </div>
 
           <!-- Section 1: 기업 기본 현황 -->
@@ -687,17 +661,7 @@
               <td style="width: 30%;" id="rep-sv-model">-</td>
             </tr>
             <tr>
-              <th colspan="4" style="background-color: #f1f5f9; text-align: left; font-weight: 700; color: #1e293b;">[현재 단계 및 시장/경쟁]</th>
-            </tr>
-            <tr>
-              <th>제품 개발 단계</th>
-              <td id="rep-sv-product-stage">-</td>
-              <th>매출 발생 여부</th>
-              <td id="rep-sv-sales-stage">-</td>
-            </tr>
-            <tr>
-              <th>주요 실행 실적</th>
-              <td colspan="3" id="rep-sv-stage-summary">-</td>
+              <th colspan="4" style="background-color: #f1f5f9; text-align: left; font-weight: 700; color: #1e293b;">[목표 시장]</th>
             </tr>
             <tr>
               <th>목표 시장 및 범위</th>
@@ -807,7 +771,7 @@
             <div class="survey-section-title">1. 전담 코치(운영인력) 정보 설정</div>
             <div class="form-group" style="margin-bottom: 20px;">
               <label for="cfg-coach-name">전담 코치 실명 (대시보드 및 보고서에 일괄 반영)</label>
-              <input type="text" id="cfg-coach-name" placeholder="예: 정세정 주임연구원" required style="width: 100%; max-width: 400px;">
+              <input type="text" id="cfg-coach-name" placeholder="예: 오세연 코치" required style="width: 100%; max-width: 400px;">
             </div>
             
             <!-- 필수 교육 과목명 설정 -->
@@ -1184,6 +1148,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20260708_3"></script>
 </body>
 </html>

@@ -1,12 +1,12 @@
 // --- AUTO STORAGE MIGRATION FOR NEW DATASET ---
-if (localStorage.getItem("COMPANIES") && !localStorage.getItem("USERS")?.includes("20424601@onboard.com")) {
+if (localStorage.getItem("COMPANIES") && (!localStorage.getItem("USERS")?.includes("20424601@onboard.com") || !localStorage.getItem("USERS")?.includes("0426298510@onboard.com"))) {
   localStorage.removeItem("COMPANIES");
   localStorage.removeItem("USERS");
 }
 
 // --- DEMO USER ACCOUNT DATA (Simulation of Supabase Auth) ---
 let USERS = JSON.parse(localStorage.getItem("USERS")) || {
-  "osy0922@hnu.kr": { role: "coach", name: "정세정 주임연구원", companyId: null, password: "osy0922" },
+  "osy0922@hnu.kr": { role: "coach", name: "오세연 코치", companyId: null, password: "osy0922" },
   "20424601@onboard.com": { role: "startup", name: "박지훈 대표", companyId: 1, password: "20424601", isFirstLogin: true },
   "20425162@onboard.com": { role: "startup", name: "신상호 대표", companyId: 2, password: "20425162", isFirstLogin: true },
   "20418716@onboard.com": { role: "startup", name: "오영웅 대표", companyId: 3, password: "20418716", isFirstLogin: true },
@@ -24,7 +24,8 @@ let USERS = JSON.parse(localStorage.getItem("USERS")) || {
   "20419158@onboard.com": { role: "startup", name: "신민준 대표", companyId: 15, password: "20419158", isFirstLogin: true },
   "20427627@onboard.com": { role: "startup", name: "이남주 대표", companyId: 16, password: "20427627", isFirstLogin: true },
   "20425790@onboard.com": { role: "startup", name: "최병진 대표", companyId: 17, password: "20425790", isFirstLogin: true },
-  "20431435@onboard.com": { role: "startup", name: "이준원 대표", companyId: 18, password: "20431435", isFirstLogin: true }
+  "20431435@onboard.com": { role: "startup", name: "이준원 대표", companyId: 18, password: "20431435", isFirstLogin: true },
+  "0426298510@onboard.com": { role: "startup", name: "오세연 대표", companyId: 19, password: "0426298510", isFirstLogin: true }
 };
 
 let currentUser = null; // Session storage
@@ -408,10 +409,62 @@ let defaultCompanies = [
     coachingCount: 0,
     coachingLogs: [],
     chatMessages: []
+  },
+  {
+    id: 19,
+    name: "오세연",
+    type: "초기 창업기업 (사업자 등록 후 1~4년 이하)",
+    representative: "오세연",
+    repDesc: "오세연 대표 (과제번호: 0426298510)",
+    invitationKey: "HN-OSY-2026",
+    establishmentDate: "2026-01-01",
+    address: "대전광역시 대덕구 한남로 70",
+    contact: "042-629-8510",
+    corpType: "법인사업자",
+    oneStopLink: "대기",
+    surveyData: null,
+    metrics: { sales: "0원 (대기)", employees: "대기", reStartup: "아니오" },
+    budget: { status: "safe", checks: { m7: false, m8: false, m9: false, m10: false, m11: false, m12: false }, total: "50,000", execution: "0" },
+    education: { hr: "대기", accounting: "대기", law: "대기", content: "노무, 세무 기본 과정 교육 대기 상태" },
+    monitoringDoc: "미작성",
+    coachingCount: 0,
+    coachingLogs: [],
+    chatMessages: []
   }
 ];
 
 let companies = JSON.parse(localStorage.getItem("COMPANIES")) || defaultCompanies;
+
+// --- FORCE DATA RESET IF OLD DEMO DATA DETECTED ---
+const hasOldDemoData = companies.some(c => c.name.includes("에이아이링크") || c.name.includes("그린에너지") || c.name.includes("드림 소프트"));
+if (hasOldDemoData) {
+  console.log("🧹 구식 데모 데이터 감지: 신규 18개 기업 데이터로 강제 초기화를 수행합니다.");
+  localStorage.removeItem("COMPANIES");
+  localStorage.removeItem("USERS");
+  companies = defaultCompanies;
+  USERS = {
+    "osy0922@hnu.kr": { role: "coach", name: "오세연 코치", companyId: null, password: "osy0922" },
+    "20424601@onboard.com": { role: "startup", name: "박지훈 대표", companyId: 1, password: "20424601", isFirstLogin: true },
+    "20425162@onboard.com": { role: "startup", name: "신상호 대표", companyId: 2, password: "20425162", isFirstLogin: true },
+    "20418716@onboard.com": { role: "startup", name: "오영웅 대표", companyId: 3, password: "20418716", isFirstLogin: true },
+    "20420729@onboard.com": { role: "startup", name: "염준 대표", companyId: 4, password: "20420729", isFirstLogin: true },
+    "20429473@onboard.com": { role: "startup", name: "이준석 대표", companyId: 5, password: "20429473", isFirstLogin: true },
+    "20420909@onboard.com": { role: "startup", name: "최성환 대표", companyId: 6, password: "20420909", isFirstLogin: true },
+    "20417065@onboard.com": { role: "startup", name: "이서진 대표", companyId: 7, password: "20417065", isFirstLogin: true },
+    "20415562@onboard.com": { role: "startup", name: "이수빈 대표", companyId: 8, password: "20415562", isFirstLogin: true },
+    "20411989@onboard.com": { role: "startup", name: "정수민 대표", companyId: 9, password: "20411989", isFirstLogin: true },
+    "20417505@onboard.com": { role: "startup", name: "지세빈 대표", companyId: 10, password: "20417505", isFirstLogin: true },
+    "20426983@onboard.com": { role: "startup", name: "김영준 대표", companyId: 11, password: "20426983", isFirstLogin: true },
+    "20430097@onboard.com": { role: "startup", name: "김건하 대표", companyId: 12, password: "20430097", isFirstLogin: true },
+    "20433275@onboard.com": { role: "startup", name: "이광록 대표", companyId: 13, password: "20433275", isFirstLogin: true },
+    "20430190@onboard.com": { role: "startup", name: "권태균 대표", companyId: 14, password: "20430190", isFirstLogin: true },
+    "20419158@onboard.com": { role: "startup", name: "신민준 대표", companyId: 15, password: "20419158", isFirstLogin: true },
+    "20427627@onboard.com": { role: "startup", name: "이남주 대표", companyId: 16, password: "20427627", isFirstLogin: true },
+    "20425790@onboard.com": { role: "startup", name: "최병진 대표", companyId: 17, password: "20425790", isFirstLogin: true },
+    "20431435@onboard.com": { role: "startup", name: "이준원 대표", companyId: 18, password: "20431435", isFirstLogin: true },
+    "0426298510@onboard.com": { role: "startup", name: "오세연 대표", companyId: 19, password: "0426298510", isFirstLogin: true }
+  };
+}
 
 // --- CONFIG DATA WITH LOCAL STORAGE & CLOUD DB ---
 let coachName = localStorage.getItem("COACH_NAME") || "전담코치";
@@ -443,7 +496,7 @@ let currentAttachedFile = null;
 let selectedReportType = "1st"; // "1st" | "2nd" | "final"
 
 // --- GOOGLE SCRIPT URL FOR FREE API CONNECTION ---
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWU-lLSIlQsZ1F3YRR4rlE658d1mXAu71PJDlPRaYZH35dRrK3VsKs-sMJhEKPnQey/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMO0h5m247mBUwTkt_yDWqxOKajOV7xMO5_lCiGUGZ-L1ivQFFxkwuMgqjLKEl_SBD/exec";
 
 
 // --- DOM ELEMENTS ---
@@ -602,9 +655,11 @@ async function loadCloudData() {
     if (resData && resData.status === "success" && resData.data) {
       const data = resData.data;
       
-      // If the cloud database is old, ignore it and force overwrite!
-      if (data.USERS && !data.USERS["20424601@onboard.com"]) {
-        console.log("🔄 구식 클라우드 데이터 감지. 신규 18개사 데이터로 클라우드 덮어쓰기를 수행합니다.");
+      const isCloudEmpty = !data.COMPANIES || data.COMPANIES.length === 0;
+      const isCloudOld = data.COMPANIES && data.COMPANIES.some(c => c.name.includes("에이아이링크") || c.name.includes("그린에너지"));
+      
+      if (isCloudEmpty || isCloudOld) {
+        console.log("🔄 클라우드 데이터가 비어있거나 구식입니다. 신규 18개사 데이터로 클라우드 덮어쓰기를 수행합니다.");
         localStorage.removeItem("COMPANIES");
         localStorage.removeItem("USERS");
         companies = defaultCompanies;
@@ -743,7 +798,7 @@ loginForm.addEventListener("submit", (e) => {
     
     enterPlatform();
   } else {
-    alert("❌ 아이디(대표자명) 또는 비밀번호가 올바르지 않습니다.");
+    alert("❌ 아이디(대표자명) 또는 비밀번호가 올바르지 않습니다.\n\n로그인 문제가 지속될 경우 오세연 연구원(042-629-8510)으로 연락 바랍니다.");
   }
 });
 
@@ -1901,10 +1956,6 @@ function renderSurveySection() {
     document.getElementById("sv-item-target").value = targetCompany.surveyData.itemTarget || "";
     document.getElementById("sv-item-model").value = targetCompany.surveyData.itemModel || "";
 
-    document.getElementById("sv-stage-product").value = targetCompany.surveyData.stageProduct || "아이디어 및 원천 기술 기획 단계";
-    document.getElementById("sv-stage-has-sales").value = targetCompany.surveyData.stageHasSales || "매출 미발생 (기술 개발 / R&D 진행 중)";
-    document.getElementById("sv-stage-summary").value = targetCompany.surveyData.stageSummary || "";
-
     document.getElementById("sv-market-target").value = targetCompany.surveyData.marketTarget || "";
 
     document.getElementById("sv-team-comp").value = targetCompany.surveyData.teamComp || "";
@@ -1939,10 +1990,6 @@ function renderSurveySection() {
     document.getElementById("sv-item-intro").value = "";
     document.getElementById("sv-item-target").value = "";
     document.getElementById("sv-item-model").value = "";
-
-    document.getElementById("sv-stage-product").value = "아이디어 및 원천 기술 기획 단계";
-    document.getElementById("sv-stage-has-sales").value = "매출 미발생 (기술 개발 / R&D 진행 중)";
-    document.getElementById("sv-stage-summary").value = "";
 
     document.getElementById("sv-market-target").value = "";
 
@@ -1992,10 +2039,6 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
   const itemTarget = document.getElementById("sv-item-target").value;
   const itemModel = document.getElementById("sv-item-model").value;
 
-  const stageProduct = document.getElementById("sv-stage-product").value;
-  const stageHasSales = document.getElementById("sv-stage-has-sales").value;
-  const stageSummary = document.getElementById("sv-stage-summary").value;
-
   const marketTarget = document.getElementById("sv-market-target").value;
 
   const teamComp = document.getElementById("sv-team-comp").value;
@@ -2039,9 +2082,6 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
     itemIntro,
     itemTarget,
     itemModel,
-    stageProduct,
-    stageHasSales,
-    stageSummary,
     marketTarget,
     teamComp,
     teamCore,
@@ -2080,9 +2120,6 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
         itemIntro: itemIntro,
         itemTarget: itemTarget,
         itemModel: itemModel,
-        stageProduct: stageProduct,
-        stageHasSales: stageHasSales,
-        stageSummary: stageSummary,
         marketTarget: marketTarget,
         marketCompetitor: marketCompetitor,
         marketDifferent: marketDifferent,
@@ -2186,9 +2223,6 @@ function renderReportSection() {
     document.getElementById("rep-sv-intro").innerText = sv.itemIntro || "-";
     document.getElementById("rep-sv-target").innerText = sv.itemTarget || "-";
     document.getElementById("rep-sv-model").innerText = sv.itemModel || "-";
-    document.getElementById("rep-sv-product-stage").innerText = sv.stageProduct || "-";
-    document.getElementById("rep-sv-sales-stage").innerText = sv.stageHasSales || "-";
-    document.getElementById("rep-sv-stage-summary").innerText = sv.stageSummary || "-";
     document.getElementById("rep-sv-market-size").innerText = sv.marketTarget || "-";
     document.getElementById("rep-sv-team-comp").innerText = sv.teamComp || "-";
     document.getElementById("rep-sv-team-core").innerText = sv.teamCore || "-";
@@ -2204,7 +2238,6 @@ function renderReportSection() {
   } else {
     const emptyFields = [
       "rep-sv-intro", "rep-sv-target", "rep-sv-model",
-      "rep-sv-product-stage", "rep-sv-sales-stage", "rep-sv-stage-summary",
       "rep-sv-market-size",
       "rep-sv-team-comp", "rep-sv-team-core", "rep-sv-team-needs",
       "rep-sv-runway", "rep-sv-funding", "rep-sv-pains", "rep-sv-goals",

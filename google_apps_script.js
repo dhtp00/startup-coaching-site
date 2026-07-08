@@ -19,6 +19,9 @@
 // 데이터가 저장될 시트 이름
 const SHEET_NAME = "DB_STORE";
 
+// 지정 폴더 아이디 (제공해주신 구글 드라이브 폴더)
+const DRIVE_FOLDER_ID = "1HB0oH-OFxJRtbOgY3nEsWen36iX5ednx";
+
 // GET 요청 처리 (데이터 불러오기)
 function doGet(e) {
   const sheet = getOrCreateSheet();
@@ -68,15 +71,23 @@ function doPost(e) {
       .setHeader("Access-Control-Allow-Origin", "*");
     }
     
-    // 2. 구글 드라이브 파일 업로드 처리
+    // 2. 구글 드라이브 지정 폴더 파일 업로드 처리
     if (postData.action === "uploadFile") {
       const fileData = postData.fileData; // base64 data url
       const base64Data = fileData.split(",")[1];
       const decoded = Utilities.base64Decode(base64Data);
       const blob = Utilities.newBlob(decoded, postData.fileType, postData.fileName);
       
-      // 구글 드라이브 루트 폴더에 파일 저장 (원하는 경우 특정 폴더 ID로 대체 가능)
-      const file = DriveApp.createFile(blob);
+      // 지정 폴더 가져오기
+      let folder;
+      try {
+        folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+      } catch (err) {
+        // 지정 폴더를 찾을 수 없거나 권한이 없는 경우 루트 폴더에 저장
+        folder = DriveApp;
+      }
+      
+      const file = folder.createFile(blob);
       
       return ContentService.createTextOutput(JSON.stringify({
         status: "success",
