@@ -469,7 +469,7 @@ if (hasOldDemoData) {
 }
 
 // --- CONFIG DATA WITH LOCAL STORAGE & CLOUD DB ---
-let coachName = localStorage.getItem("COACH_NAME") || "전담코치";
+let coachName = localStorage.getItem("COACH_NAME") || "오세연 코치";
 
 let defaultEduNames = {
   hr: "기본 노무 실무",
@@ -495,11 +495,10 @@ let milestones = JSON.parse(localStorage.getItem("MILESTONES")) || defaultMilest
 
 let selectedCompanyId = 1;
 let currentAttachedFile = null;
-let selectedReportType = "1st"; // "1st" | "2nd" | "final"
 
 // --- GOOGLE SCRIPT URL FOR FREE API CONNECTION ---
+// 여기에 깃허브 배포 가이드라인에 따라 복사한 구글 웹앱 URL을 입력하시면 실서비스 연동이 완료됩니다!
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMO0h5m247mBUwTkt_yDWqxOKajOV7xMO5_lCiGUGZ-L1ivQFFxkwuMgqjLKEl_SBD/exec";
-
 
 // --- DOM ELEMENTS ---
 const loginOverlayScreen = document.getElementById("login-overlay-screen");
@@ -537,18 +536,6 @@ const sectionEdu = document.getElementById("section-edu");
 const sectionSurvey = document.getElementById("section-survey");
 const sectionReport = document.getElementById("section-report");
 const sectionSetting = document.getElementById("section-setting"); // 설정 추가
-const surveyCompanySelect = document.getElementById("survey-company-select");
-const surveyCompanySelectContainer = document.getElementById("survey-company-select-container");
-
-const btnReport1st = document.getElementById("btn-report-1st");
-const btnReport2nd = document.getElementById("btn-report-2nd");
-const btnReportFinal = document.getElementById("btn-report-final");
-const repFinalEvalSection = document.getElementById("rep-final-eval-section");
-const repFinalEvalText = document.getElementById("rep-final-eval-text");
-const reportCoachEvalInputContainer = document.getElementById("report-coach-eval-input-container");
-const reportFinalEvalTextarea = document.getElementById("report-final-eval-textarea");
-const btnSaveReportEval = document.getElementById("btn-save-report-eval");
-const summaryCardsContainer = document.getElementById("summary-cards-container");
 
 const mainHeaderTitle = document.getElementById("main-header-title");
 
@@ -652,8 +639,7 @@ async function loadCloudData() {
       throw new Error("HTTP error " + response.status);
     }
     
-
-      const resData = await response.json();
+    const resData = await response.json();
     if (resData && resData.status === "success" && resData.data) {
       const data = resData.data;
       
@@ -715,6 +701,7 @@ async function loadCloudData() {
         }
       }
       console.log("☁️ 구글 스프레드시트 클라우드 데이터 동기화 완료.");
+      // 불러온 데이터를 UI에 동적 바인딩하기 위해 필요한 렌더링 호출
       if (currentUser) {
         renderDashboard();
         renderMilestones();
@@ -759,11 +746,12 @@ function saveToLocalStorage() {
   localStorage.setItem("EDU_NAMES", JSON.stringify(eduNames));
   localStorage.setItem("NOTICES", JSON.stringify(notices));
   
+  // 만약 구글 API 주소가 세팅되어 있다면 자동으로 백그라운드 클라우드 동기화 수행
   if (GOOGLE_SCRIPT_URL) {
     fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       mode: "no-cors",
-      headers: { "Content-Type": "text/plain" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         action: "syncData",
         userEmail: currentUser ? currentUser.name : "System",
@@ -774,11 +762,7 @@ function saveToLocalStorage() {
         eduNames: eduNames,
         notices: notices
       })
-    })
-    .then(() => {
-      console.log("☁️ 실시간 구글 스프레드시트 동기화 완료 (no-cors)");
-    })
-    .catch(err => console.log("Google sync delay (offline mode or script URL pending): ", err));
+    }).catch(err => console.log("Google sync delay: ", err));
   }
 }
 
@@ -910,8 +894,8 @@ function enterPlatform() {
   if (currentUser.role === "coach") {
     userRoleBadge.innerText = "전담코치";
     userRoleBadge.className = "tag tag-early";
-    btnAddCompany.style.display = "inline-flex";
-    btnEditMilestone.style.display = "inline-flex";
+    btnAddCompany.style.display = "inline-block";
+    btnEditMilestone.style.display = "inline-block";
     if (menuSetting) menuSetting.style.display = "block";
     document.querySelectorAll(".coach-only-cell").forEach(c => c.style.display = "table-cell");
     selectedCompanyId = companies[0] ? companies[0].id : 1;
@@ -963,6 +947,9 @@ function renderNoticeBoard() {
 }
 
 function applyDynamicConfigs() {
+  // 대시보드 코치명 카드 변경
+  const coachCard = document.querySelector(".summary-grid .card:first-child .card-value");
+  if (coachCard) coachCard.innerText = coachName;
 
   // 교육 이수 탭의 3대 교육과목 테이블 헤더 명칭 동적화
   const eduHrTh = document.querySelector("#section-edu table th:nth-child(2)");
@@ -991,7 +978,7 @@ function applyDynamicConfigs() {
   // 모니터링 보고서 하단의 코치 작성자 이름 변경
   const repSubtitle = document.querySelector("#printable-report-area .report-header p");
   if (repSubtitle) {
-    repSubtitle.innerHTML = `발행일자: <span id="report-print-date">-</span> | 작성자: 한남대학교 창업지원단 전담코치`;
+    repSubtitle.innerHTML = `발행일자: <span id="report-print-date">-</span> | 작성자: 한남대 창업지원단 전담코치 ${coachName}`;
   }
 
   // 공지사항 렌더링
@@ -1022,123 +1009,26 @@ function getFilteredCompanies() {
 // --- RENDER DASHBOARD (SIMPLIFIED VERSION) ---
 function renderDashboard() {
   const filtered = getFilteredCompanies();
+
   const total = filtered.length;
+  document.getElementById("stat-total-companies").innerText = `${total}개사`;
+  
+  const totalCoaching = filtered.reduce((acc, c) => acc + c.coachingCount, 0);
+  const targetCoaching = total * 3;
+  const rate = targetCoaching > 0 ? Math.round((totalCoaching / targetCoaching) * 100) : 0;
+  document.getElementById("stat-coaching-rate").innerText = `${rate}%`;
 
-  const activeMonthsForProgress = ["m7", "m8", "m9", "m10", "m11", "m12"];
-
-  // Render Role-specific Summary Cards
-  if (summaryCardsContainer) {
-    if (currentUser.role === "coach") {
-      // 1. 지원대상 기업 수
-      const preCount = companies.filter(c => c.type.includes("예비")).length;
-      const earlyCount = companies.filter(c => !c.type.includes("예비")).length;
-
-      // 2. 전체 밀착 코칭 시행률
-      const totalCoaching = companies.reduce((acc, c) => acc + c.coachingCount, 0);
-      const targetCoaching = companies.length * 3;
-      const coachingRate = targetCoaching > 0 ? Math.round((totalCoaching / targetCoaching) * 100) : 0;
-
-      // 3. 사업비 집행 전체 점검율
-      let totalChecks = 0;
-      let activeChecks = 0;
-      companies.forEach(c => {
-        activeMonthsForProgress.forEach(k => {
-          totalChecks++;
-          if (c.budget.checks[k]) activeChecks++;
-        });
-      });
-      const checkRate = totalChecks > 0 ? Math.round((activeChecks / totalChecks) * 100) : 0;
-
-      // 4. 필수 교육 전체 완료율
-      let totalEduClasses = companies.length * 3;
-      let completedEduClasses = 0;
-      companies.forEach(c => {
-        if (c.education.hr === "이수") completedEduClasses++;
-        if (c.education.accounting === "이수") completedEduClasses++;
-        if (c.education.law === "이수") completedEduClasses++;
-      });
-      const eduRate = totalEduClasses > 0 ? Math.round((completedEduClasses / totalEduClasses) * 100) : 0;
-
-      summaryCardsContainer.innerHTML = `
-        <div class="card">
-          <div class="card-title">지원대상 기업 수</div>
-          <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${total}개사</div>
-          <div class="card-desc"><span class="trend-up">예비 ${preCount} / 초기 ${earlyCount}</span></div>
-        </div>
-        <div class="card">
-          <div class="card-title">전체 밀착 코칭 시행률</div>
-          <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${coachingRate}%</div>
-          <div class="card-desc">총 ${targetCoaching}회 중 ${totalCoaching}회 완료</div>
-        </div>
-        <div class="card">
-          <div class="card-title">사업비 집행 전체 점검율</div>
-          <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${checkRate}%</div>
-          <div class="card-desc">전체 기업 월별 점검 완료 비중</div>
-        </div>
-        <div class="card">
-          <div class="card-title">필수 교육 전체 완료율</div>
-          <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${eduRate}%</div>
-          <div class="card-desc">총 ${totalEduClasses}개 과목 중 ${completedEduClasses}개 완료</div>
-        </div>
-      `;
-    } else {
-      // STARTUP VIEW
-      const myCompany = companies.find(c => c.id === currentUser.companyId) || filtered[0];
-      if (myCompany) {
-        // 1. 나의 온보딩 진행 단계
-        let currentStage = "1단계";
-        let stageDesc = "사전 실태조사 입력 대기";
-        if (myCompany.surveyData) {
-          const eduFinished = myCompany.education.hr === "이수" && myCompany.education.accounting === "이수" && myCompany.education.law === "이수";
-          if (eduFinished) {
-            currentStage = "4단계";
-            stageDesc = "최종 결과보고서 작성/제출 대기";
-          } else {
-            currentStage = "2~3단계";
-            stageDesc = "필수 교육 이수 및 코칭 진행 중";
-          }
-        }
-
-        // 2. 나의 밀착 코칭 현황
-        const myCoaching = myCompany.coachingCount;
-
-        // 3. 나의 필수 교육 이수 현황
-        let myCompletedEdu = 0;
-        if (myCompany.education.hr === "이수") myCompletedEdu++;
-        if (myCompany.education.accounting === "이수") myCompletedEdu++;
-        if (myCompany.education.law === "이수") myCompletedEdu++;
-
-        // 4. 사업비 집행 점검 현황
-        let myCheckedMonths = 0;
-        activeMonthsForProgress.forEach(m => {
-          if (myCompany.budget.checks[m]) myCheckedMonths++;
-        });
-
-        summaryCardsContainer.innerHTML = `
-          <div class="card">
-            <div class="card-title">나의 온보딩 진행 단계</div>
-            <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${currentStage} 진행 중</div>
-            <div class="card-desc">${stageDesc}</div>
-          </div>
-          <div class="card">
-            <div class="card-title">나의 밀착 코칭 현황</div>
-            <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">${myCoaching}회 완료</div>
-            <div class="card-desc">의무 코칭 3회 목표 (진행률 ${Math.round((myCoaching / 3) * 100)}%)</div>
-          </div>
-          <div class="card">
-            <div class="card-title">나의 필수 교육 이수 현황</div>
-            <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">진행 중 (${myCompletedEdu}/3)</div>
-            <div class="card-desc">노무(${myCompany.education.hr}), 회계(${myCompany.education.accounting}), 법률(${myCompany.education.law})</div>
-          </div>
-          <div class="card">
-            <div class="card-title">사업비 집행 점검 현황</div>
-            <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">점검 완료 (${myCheckedMonths}/6개월)</div>
-            <div class="card-desc">7~12월 중 ${myCheckedMonths}개월 집행 완료</div>
-          </div>
-        `;
-      }
-    }
-  }
+  // Calculate Monthly Checkpoint Progress
+  let totalChecks = 0;
+  let activeChecks = 0;
+  filtered.forEach(c => {
+    Object.keys(c.budget.checks).forEach(k => {
+      totalChecks++;
+      if (c.budget.checks[k]) activeChecks++;
+    });
+  });
+  const checkRate = totalChecks > 0 ? Math.round((activeChecks / totalChecks) * 100) : 0;
+  document.getElementById("stat-doc-count").innerText = `${checkRate}%`;
 
   // Update training stats on Education sub-panel
   const totalEdu = companies.length;
@@ -1168,8 +1058,8 @@ function renderDashboard() {
 
     // Monthly checklist circle badges (Coded iteratively)
     let checksHTML = `<div style="display:flex; gap: 4px; align-items:center;">`;
-    const months = ["m7", "m8", "m9", "m10", "m11", "m12"];
-    const monthLabels = ["7월", "8월", "9월", "10월", "11월", "12월"];
+    const months = ["m5", "m6", "m7", "m8", "m9", "m10", "m11", "m12"];
+    const monthLabels = ["5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
 
     months.forEach((m, idx) => {
       const isChecked = company.budget.checks[m];
@@ -1197,11 +1087,11 @@ function renderDashboard() {
       <td style="text-align: center; font-weight: 600;">${company.coachingCount}회</td>
       <td>
         <div style="display:flex; gap: 4px;">
-          <button class="action-btn" onclick="openDetailModal(${company.id})" style="background-color: var(--bg-primary); padding: 4px 6px; line-height: 1.2;">🔍 상세<br>조회</button>
-          <button class="action-btn" onclick="openCoachingModal(${company.id})" style="padding: 4px 6px; line-height: 1.2;">
-            ${currentUser.role === "coach" ? "✍️ 코칭<br>등록" : "🔍 내역<br>보기"}
+          <button class="action-btn" onclick="openDetailModal(${company.id})" style="background-color: var(--bg-primary);">🔍 상세조회</button>
+          <button class="action-btn" onclick="openCoachingModal(${company.id})">
+            ${currentUser.role === "coach" ? "✍️ 코칭등록" : "🔍 내역보기"}
           </button>
-          ${currentUser.role === "coach" ? `<button class="action-btn" onclick="openEditCompanyModal(${company.id})" style="border-color: var(--accent-color); color: var(--accent-color); padding: 4px 6px; line-height: 1.2;">⚙️ 수정</button>` : ""}
+          ${currentUser.role === "coach" ? `<button class="action-btn" onclick="openEditCompanyModal(${company.id})" style="border-color: var(--accent-color); color: var(--accent-color);">⚙️ 수정</button>` : ""}
         </div>
       </td>
     `;
@@ -1620,8 +1510,6 @@ btnAddCompany.addEventListener("click", () => {
   companyEditId.value = "";
   companyModalTitle.innerText = "🏫 신규 창업기업 등록";
   
-  document.getElementById("btn-delete-company").style.display = "none";
-  
   const randNum = Math.floor(1000 + Math.random() * 9000);
   document.getElementById("c-key").value = `HN-NEW-${randNum}`;
   document.getElementById("c-password").value = "1234";
@@ -1635,8 +1523,6 @@ window.openEditCompanyModal = function(id) {
 
   companyModalTitle.innerText = `⚙️ ${target.name} 정보 수정`;
   companyEditId.value = target.id;
-
-  document.getElementById("btn-delete-company").style.display = "inline-block";
 
   document.getElementById("c-name").value = target.name;
   document.getElementById("c-type").value = target.type;
@@ -1657,6 +1543,8 @@ window.openEditCompanyModal = function(id) {
   document.getElementById("c-onestop").value = target.oneStopLink || "";
 
   // Sync checkboxes for monthly checks
+  document.getElementById("chk-m5").checked = target.budget.checks.m5;
+  document.getElementById("chk-m6").checked = target.budget.checks.m6;
   document.getElementById("chk-m7").checked = target.budget.checks.m7;
   document.getElementById("chk-m8").checked = target.budget.checks.m8;
   document.getElementById("chk-m9").checked = target.budget.checks.m9;
@@ -1701,6 +1589,8 @@ companyForm.addEventListener("submit", (e) => {
   const bStatus = document.getElementById("c-budget-status").value;
 
   const checks = {
+    m5: document.getElementById("chk-m5").checked,
+    m6: document.getElementById("chk-m6").checked,
     m7: document.getElementById("chk-m7").checked,
     m8: document.getElementById("chk-m8").checked,
     m9: document.getElementById("chk-m9").checked,
@@ -1775,45 +1665,6 @@ companyForm.addEventListener("submit", (e) => {
   saveToLocalStorage();
   closeCompanyModal();
   renderDashboard();
-});
-
-window.deleteCompany = function(id) {
-  if (currentUser.role !== "coach") {
-    alert("❌ 창업기업 삭제 권한은 전담코치에게만 있습니다.");
-    return;
-  }
-
-  const target = companies.find(c => c.id === id);
-  if (!target) return;
-
-  const isConfirmed = confirm(`⚠️ [경고] "${target.name}" 기업을 정말로 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없으며, 기업의 사업비 현황, 필수 교육 로그 및 매칭된 모든 정보가 영구히 삭제됩니다.`);
-  if (!isConfirmed) return;
-
-  // 1. Remove from companies array
-  companies = companies.filter(c => c.id !== id);
-
-  // 2. Remove associated startup accounts from USERS
-  Object.keys(USERS).forEach(key => {
-    if (USERS[key].companyId === id) {
-      delete USERS[key];
-    }
-  });
-
-  // 3. Save to localStorage and sync with cloud (if URL is set)
-  saveToLocalStorage();
-
-  // 4. Re-render
-  renderDashboard();
-  closeCompanyModal();
-
-  alert(`✅ "${target.name}" 기업 데이터가 성공적으로 삭제되었습니다.`);
-};
-
-document.getElementById("btn-delete-company").addEventListener("click", () => {
-  const idVal = companyEditId.value;
-  if (idVal) {
-    deleteCompany(parseInt(idVal));
-  }
 });
 
 // EDUCATION EDIT
@@ -1896,27 +1747,9 @@ function renderSurveySection() {
   
   let targetCompany = null;
   if (currentUser.role === "coach") {
-    if (surveyCompanySelectContainer) {
-      surveyCompanySelectContainer.style.display = "flex";
-    }
-    if (surveyCompanySelect) {
-      surveyCompanySelect.innerHTML = "";
-      companies.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c.id;
-        opt.innerText = c.name;
-        if (c.id === selectedCompanyId) {
-          opt.selected = true;
-        }
-        surveyCompanySelect.appendChild(opt);
-      });
-    }
     targetCompany = companies.find(c => c.id === selectedCompanyId) || companies[0];
     strategyContainer.style.display = "flex";
   } else {
-    if (surveyCompanySelectContainer) {
-      surveyCompanySelectContainer.style.display = "none";
-    }
     targetCompany = companies.find(c => c.id === currentUser.companyId);
     strategyContainer.style.display = "flex";
   }
@@ -2154,8 +1987,6 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
         itemTarget: itemTarget,
         itemModel: itemModel,
         marketTarget: marketTarget,
-        marketCompetitor: marketCompetitor,
-        marketDifferent: marketDifferent,
         teamComp: teamComp,
         teamCore: teamCore,
         teamNeeds: teamNeeds,
@@ -2221,29 +2052,11 @@ function renderReportSection() {
   document.getElementById("rep-edu-law").innerText = activeCompany.education.law;
   document.getElementById("rep-edu-desc").innerText = activeCompany.education.content || "등록된 맞춤형 추천 강좌 및 학습 로그가 없습니다.";
 
-  // Monthly Budget Checks - Dynamic based on report type
-  let reportMonths = [];
-  let reportMonthLabels = [];
-  if (selectedReportType === "1st") {
-    reportMonths = ["m7", "m8", "m9"];
-    reportMonthLabels = ["7월", "8월", "9월"];
-  } else if (selectedReportType === "2nd") {
-    reportMonths = ["m10", "m11", "m12"];
-    reportMonthLabels = ["10월", "11월", "12월"];
-  } else {
-    reportMonths = ["m7", "m8", "m9", "m10", "m11", "m12"];
-    reportMonthLabels = ["7월", "8월", "9월", "10월", "11월", "12월"];
-  }
-
-  // Update budget table headers
-  const budgetTableHead = document.querySelector("#section-report table:nth-of-type(4) thead tr");
-  if (budgetTableHead) {
-    budgetTableHead.innerHTML = reportMonthLabels.map(label => `<th>${label}</th>`).join("");
-  }
-
+  // Monthly Budget Checks
+  const months = ["m5", "m6", "m7", "m8", "m9", "m10", "m11", "m12"];
   const budgetRow = document.getElementById("rep-budget-row");
   budgetRow.innerHTML = "";
-  reportMonths.forEach(m => {
+  months.forEach(m => {
     const isChecked = activeCompany.budget.checks[m];
     const td = document.createElement("td");
     td.innerText = isChecked ? "🟢" : "⚪";
@@ -2282,26 +2095,13 @@ function renderReportSection() {
     document.getElementById("rep-survey-strategy").innerText = "사전조사 결과가 없어 맞춤형 지원 전략이 수립되지 않았습니다.";
   }
 
-  // Coaching logs table - Filtered by date range
+  // Coaching logs table
   const logsBody = document.getElementById("rep-coaching-logs-body");
   logsBody.innerHTML = "";
-
-  // Filter logs based on date range
-  let filteredLogs = activeCompany.coachingLogs || [];
-  if (selectedReportType === "1st") {
-    filteredLogs = (activeCompany.coachingLogs || []).filter(log => {
-      return log.date >= "2026-07-01" && log.date <= "2026-09-30";
-    });
-  } else if (selectedReportType === "2nd") {
-    filteredLogs = (activeCompany.coachingLogs || []).filter(log => {
-      return log.date >= "2026-10-01" && log.date <= "2026-12-31";
-    });
-  }
-
-  if (filteredLogs.length === 0) {
-    logsBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-secondary);">해당 기간의 밀착 코칭 및 상담 이력이 없습니다.</td></tr>`;
+  if (activeCompany.coachingLogs.length === 0) {
+    logsBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-secondary);">밀착 코칭 및 상담 이력이 없습니다.</td></tr>`;
   } else {
-    filteredLogs.forEach(log => {
+    activeCompany.coachingLogs.forEach(log => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td style="text-align:center;">${log.date}</td>
@@ -2312,34 +2112,6 @@ function renderReportSection() {
       logsBody.appendChild(tr);
     });
   }
-
-  // Update report title dynamically
-  const reportMainTitle = document.querySelector("#printable-report-area .report-header h2");
-  if (reportMainTitle) {
-    if (selectedReportType === "1st") {
-      reportMainTitle.innerText = "창업기업별 온보딩 및 모니터링 결과보고서 (1차)";
-    } else if (selectedReportType === "2nd") {
-      reportMainTitle.innerText = "창업기업별 온보딩 및 모니터링 결과보고서 (2차)";
-    } else {
-      reportMainTitle.innerText = "창업기업별 온보딩 및 모니터링 종합 결과보고서 (최종)";
-    }
-  }
-
-  // Final Evaluation display and edit panel
-  if (selectedReportType === "final") {
-    if (repFinalEvalSection) repFinalEvalSection.style.display = "block";
-    if (repFinalEvalText) repFinalEvalText.innerText = activeCompany.finalEvaluation || "전담코치 최종 종합평가 의견이 아직 기재되지 않았습니다.";
-    
-    if (currentUser.role === "coach") {
-      if (reportCoachEvalInputContainer) reportCoachEvalInputContainer.style.display = "block";
-      if (reportFinalEvalTextarea) reportFinalEvalTextarea.value = activeCompany.finalEvaluation || "";
-    } else {
-      if (reportCoachEvalInputContainer) reportCoachEvalInputContainer.style.display = "none";
-    }
-  } else {
-    if (repFinalEvalSection) repFinalEvalSection.style.display = "none";
-    if (reportCoachEvalInputContainer) reportCoachEvalInputContainer.style.display = "none";
-  }
 }
 
 // Dropdown Change listener in Report view
@@ -2347,61 +2119,6 @@ document.getElementById("report-company-select").addEventListener("change", (e) 
   selectedCompanyId = parseInt(e.target.value);
   renderReportSection();
 });
-
-// Dropdown Change listener in Survey view
-if (surveyCompanySelect) {
-  surveyCompanySelect.addEventListener("change", (e) => {
-    selectedCompanyId = parseInt(e.target.value);
-    renderSurveySection();
-  });
-}
-
-// Report type tab clicks
-function updateReportTabActiveStates() {
-  [btnReport1st, btnReport2nd, btnReportFinal].forEach(btn => {
-    if (btn) btn.classList.remove("active");
-  });
-  if (selectedReportType === "1st" && btnReport1st) btnReport1st.classList.add("active");
-  if (selectedReportType === "2nd" && btnReport2nd) btnReport2nd.classList.add("active");
-  if (selectedReportType === "final" && btnReportFinal) btnReportFinal.classList.add("active");
-}
-
-if (btnReport1st) {
-  btnReport1st.addEventListener("click", () => {
-    selectedReportType = "1st";
-    updateReportTabActiveStates();
-    renderReportSection();
-  });
-}
-if (btnReport2nd) {
-  btnReport2nd.addEventListener("click", () => {
-    selectedReportType = "2nd";
-    updateReportTabActiveStates();
-    renderReportSection();
-  });
-}
-if (btnReportFinal) {
-  btnReportFinal.addEventListener("click", () => {
-    selectedReportType = "final";
-    updateReportTabActiveStates();
-    renderReportSection();
-  });
-}
-
-// Save Report Evaluation
-if (btnSaveReportEval) {
-  btnSaveReportEval.addEventListener("click", () => {
-    if (currentUser.role !== "coach") return;
-    const select = document.getElementById("report-company-select");
-    const activeCompany = companies.find(c => c.id === parseInt(select.value)) || companies[0];
-    if (activeCompany) {
-      activeCompany.finalEvaluation = reportFinalEvalTextarea.value.trim();
-      saveToLocalStorage();
-      renderReportSection();
-      alert(`🎉 ${activeCompany.name}의 최종 종합 평가가 구글 클라우드에 성공적으로 저장 및 동기화되었습니다!`);
-    }
-  });
-}
 
 // Print Button
 document.getElementById("btn-print-report").addEventListener("click", () => {

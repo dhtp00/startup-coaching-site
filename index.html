@@ -164,14 +164,34 @@
       <!-- SECTION 1: 코치 대시보드 뷰 -->
       <section id="section-dash" class="view-section active">
         <!-- Summary Cards Grid -->
-        <!-- Summary Cards Grid (Rendered dynamically in JS based on role) -->
-        <div class="summary-grid" id="summary-cards-container"></div>
+        <div class="summary-grid">
+          <div class="card">
+            <div class="card-title">전담 운영인력</div>
+            <div class="card-value" style="font-size: 1.4rem; padding-top: 5px;">오세연 코치</div>
+            <div class="card-desc">경력 5년 (한남대 창업지원단)</div>
+          </div>
+          <div class="card">
+            <div class="card-title">지원대상 기업 수</div>
+            <div class="card-value" id="stat-total-companies">5개사</div>
+            <div class="card-desc"><span class="trend-up">예비 2 / 초기(1년 미만) 3</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">밀착 코칭 시행률</div>
+            <div class="card-value" id="stat-coaching-rate">60%</div>
+            <div class="card-desc">기업별 3회 목표 (진행 9/15)</div>
+          </div>
+          <div class="card">
+            <div class="card-title">사업비 집행 점검율</div>
+            <div class="card-value" id="stat-doc-count">0%</div>
+            <div class="card-desc">월별 집행 점검 완료 비중</div>
+          </div>
+        </div>
 
         <!-- Startup Companies List Table (Simplified) -->
         <div>
           <div class="section-title">
-            <span>지원기업 사업비 집행 및 모니터링 현황</span>
-            <button id="btn-add-company" style="background: linear-gradient(135deg, #3b82f6, #6366f1); color: #ffffff; font-weight: 700; padding: 10px 18px; font-size: 0.85rem; border-radius: 8px; border: none; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4); cursor: pointer; display: none; align-items: center; gap: 6px; transition: all 0.2s ease;">➕ 신규 기업 등록</button>
+            <span>지원기업 사업비 집행 및 모니터링 현황 (단순화 버전)</span>
+            <button class="action-btn" id="btn-add-company" style="background-color: var(--accent-color); border: none; display: none;">+ 신규 기업 등록</button>
           </div>
           <div class="table-container">
             <table>
@@ -181,7 +201,7 @@
                   <th>구분</th>
                   <th>대표자 정보</th>
                   <th>핵심 지표(매출/고용)</th>
-                  <th>월별 사업비 집행 점검 (7~12월)</th>
+                  <th>월별 사업비 집행 점검 (5~12월)</th>
                   <th>필수 교육 이수</th>
                   <th>누적 코칭</th>
                   <th>관리</th>
@@ -319,15 +339,6 @@
         <div class="section-title">
           <span>📝 창업기업 기초 사전 조사 및 멘토링 요구사항 진단</span>
         </div>
-        
-        <!-- 코치 전용 기업 선택 드롭다운 -->
-        <div id="survey-company-select-container" style="display: none; background: var(--bg-secondary); padding: 16px 24px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; align-items: center; gap: 12px;">
-          <label for="survey-company-select" style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary); text-transform: none; margin-bottom: 0;">조회 대상 기업 선택:</label>
-          <select id="survey-company-select" style="background: #fff; width: 250px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem; min-width: 200px; background-color: var(--bg-primary);">
-            <!-- Loaded dynamically -->
-          </select>
-        </div>
-
         <div class="survey-card">
           <div id="survey-startup-info" style="margin-bottom: 20px; padding: 12px; background: rgba(79, 70, 229, 0.05); border-radius: 8px; border: 1px solid rgba(79, 70, 229, 0.1);">
             <strong>ℹ️ 안내:</strong> 본 설문조사는 기업의 현재 역량을 정확하게 진단하고 맞춤형 성장 전략을 수립하기 위한 서식입니다.
@@ -347,7 +358,7 @@
               </div>
               <div class="form-group">
                 <label for="sv-contact">대표자 연락처</label>
-                <input type="text" id="sv-contact" required>
+                <input type="text" id="sv-contact" placeholder="예: 010-1234-5678" required>
               </div>
               <div class="form-group">
                 <label for="sv-corp-type">창업 형태 (하나만 선택)</label>
@@ -363,7 +374,7 @@
               </div>
               <div class="form-group">
                 <label for="sv-address">사업장 소재지 (주소)</label>
-                <input type="text" id="sv-address" required>
+                <input type="text" id="sv-address" placeholder="예: 대전광역시 대덕구 한남로 70" required>
               </div>
               <div class="form-group">
                 <label for="sv-sales">현재 매출액 (최근 1년 기준, 하나만 선택)</label>
@@ -400,17 +411,17 @@
             <div class="survey-section-title">2. 아이템 및 사업 개요 (Business Overview)</div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-item-intro">사업 아이템 한 줄 소개</label>
-              <input type="text" id="sv-item-intro" required>
+              <input type="text" id="sv-item-intro" placeholder="예: 생성형 AI 기반의 마케팅 솔루션 또는 방열 소자 장비" required>
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-item-target">주요 타깃 고객층 (Target Customer)</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(우리의 기술/제품을 도입할 핵심 수요처나 최종 사용자는 누구인가요? 예: 글로벌 파운드리 기업, 국내 상급종합병원, 자율주행 부품 제조사 등)</span>
-              <input type="text" id="sv-item-target" required>
+              <input type="text" id="sv-item-target" placeholder="예: 국내 상급종합병원, B2B 마케팅 기획사" required>
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-item-model">비즈니스 수익 모델 (Revenue Model)</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(수익 구조를 간단히 작성해 주세요. 예: 기술 라이선싱(원천기술 이전), B2B SaaS 구독료, 하드웨어 장비 판매 및 유지보수 등)</span>
-              <input type="text" id="sv-item-model" required>
+              <input type="text" id="sv-item-model" placeholder="예: B2B SaaS 구독료 모델 및 맞춤형 대기업 솔루션 구축 서비스" required>
             </div>
 
             <!-- 3. 목표 시장 인식 -->
@@ -418,7 +429,7 @@
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-market-target">목표하는 핵심 타깃 시장 범위</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(정확한 TAM-SAM-SOM 수치 대신, 현재 제품/기술을 적용하고자 하는 핵심 타깃 시장의 성격과 범위를 적어주세요. 예시: 국내 생성형 AI 기반의 B2B SaaS 마케팅 솔루션 시장 등)</span>
-              <input type="text" id="sv-market-target" required>
+              <input type="text" id="sv-market-target" placeholder="예: 국내 상급병원 대상 AI 바이오 영상 판독 보조 소프트웨어 시장" required>
             </div>
 
             <!-- 4. 팀 구성·역량 -->
@@ -426,17 +437,17 @@
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-team-comp">핵심 팀 구성원 분포 (역할 분담)</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 대표 1명(기획/R&D 총괄), CTO 1명(AI 알고리즘 개발), 팀원 2명(하드웨어 설계) 등)</span>
-              <input type="text" id="sv-team-comp" required>
+              <input type="text" id="sv-team-comp" placeholder="예: 대표 1인 (총괄), 개발 2인, 디자이너 1인" required>
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-team-core">우리 팀의 주요 핵심역량</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 핵심 인력의 동종 업계 R&D 경력, 원천 특허 보유 현황 등)</span>
-              <input type="text" id="sv-team-core" required>
+              <input type="text" id="sv-team-core" placeholder="예: 카이스트 석사 출신 개발진 및 관련 특허 2건 출원 완료" required>
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-team-needs">성장을 위해 현재 보완이 시급한 핵심 영역</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 시리즈 A 투자를 위한 IR 패키징, 오픈 이노베이션 연계, 양산 공정 전문가 매칭 등)</span>
-              <input type="text" id="sv-team-needs" required>
+              <input type="text" id="sv-team-needs" placeholder="예: 양산 공정 설계 전문가 및 대기업 오픈이노베이션 판로 개척 마케터 연계" required>
             </div>
 
             <!-- 5. 자금 조달 및 운영 계획 -->
@@ -474,16 +485,16 @@
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-need-pain">사업을 진행하며 느끼는 가장 큰 애로사항 (고민 1~3개)</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 기술 인력 채용, 특허 출원 및 분쟁, 투자 유치 전략 수립, 대기업 PoC 연계 등)</span>
-              <textarea id="sv-need-pain" rows="2" required></textarea>
+              <textarea id="sv-need-pain" rows="2" placeholder="예: 1. 팁스 연계용 투자 유치 2. 지식재산권(IP) 특허 분쟁 대비 3. 개발 인력 고용 문제" required></textarea>
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label for="sv-need-goal">이번 온보딩 멘토링 프로그램을 통해 달성하고 싶은 구체적인 목표</label>
-              <input type="text" id="sv-need-goal" required>
+              <input type="text" id="sv-need-goal" placeholder="예: 기관 연계 투자 제안서 확보 및 특허 출원 로드맵 구축" required>
             </div>
             <div class="form-group" style="margin-bottom: 24px;">
               <label for="sv-need-deliverable">멘토링 과정에서 기대하는 최종 결과물</label>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display:block; margin-bottom:4px;">(예: 투자용 IR Deck 피드백, 팁스(TIPS) 제안서 초안 고도화, 기술 스케일업을 위한 정부 지원사업 추천 리스트 등)</span>
-              <input type="text" id="sv-need-deliverable" required>
+              <input type="text" id="sv-need-deliverable" placeholder="예: IR 사업계획서 멘토 피드백 조치표, 팁스 제안서 고도화 초안" required>
             </div>
 
             <!-- 7. 교육 분야 수요 조사 -->
@@ -506,11 +517,9 @@
             <!-- 코치 맞춤형 지원 전략 수립 -->
             <div class="form-group" style="margin-bottom: 24px;" id="survey-strategy-container">
               <label for="sv-strategy">한남대 창업지원단 전담코치 맞춤형 지원 전략 수립 (코치 기재란)</label>
-              <textarea id="sv-strategy" rows="4"></textarea>
+              <textarea id="sv-strategy" rows="4" placeholder="스타트업의 위 사전설문 응답 결과를 정밀 분석한 뒤, 전담 코치가 진단한 육성 방향성 및 멘토링 지원 전략을 입력합니다."></textarea>
             </div>
 
-            <div style="display: flex; justify-content: flex-end;">
-              <button type="submit" class="send-btn" id="btn-submit-survey" style="padding: 12px 24px;">📝 사전 조사 답변 제출</button>
             </div>
           </form>
         </div>
@@ -522,25 +531,16 @@
           <span>📋 창업기업별 모니터링 종합 보고서 출력</span>
         </div>
         
-        <div class="report-controls" style="flex-direction: column; align-items: stretch; gap: 16px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <label for="report-company-select" style="font-weight: 700;">대상 기업 선택:</label>
-              <select id="report-company-select" style="background: #fff; width: 250px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-                <!-- Javascript will load company list -->
-              </select>
-            </div>
-            <button class="action-btn" id="btn-print-report" style="background-color: var(--accent-color); color: #fff; border: none; padding: 10px 20px; font-weight: 600; border-radius: 8px; cursor: pointer;">
-              🖨️ 보고서 인쇄 (A4 출력)
-            </button>
+        <div class="report-controls">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <label for="report-company-select" style="font-weight: 700;">대상 기업 선택:</label>
+            <select id="report-company-select" style="background: #fff; width: 250px;">
+              <!-- Javascript will load company list -->
+            </select>
           </div>
-          
-          <!-- 보고서 단계 구분 탭 -->
-          <div class="view-toggle" style="align-self: flex-start; background-color: rgba(0, 0, 0, 0.04); padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; gap: 4px;">
-            <button type="button" class="toggle-btn active" id="btn-report-1st" style="border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">1차 모니터링 보고서 (7~9월)</button>
-            <button type="button" class="toggle-btn" id="btn-report-2nd" style="border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">2차 모니터링 보고서 (10~12월)</button>
-            <button type="button" class="toggle-btn" id="btn-report-final" style="border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">최종 종합 결과보고서 (전체)</button>
-          </div>
+          <button class="action-btn" id="btn-print-report" style="background-color: var(--accent-color); color: #fff; border: none; padding: 8px 16px; font-weight: 600;">
+            🖨️ 보고서 인쇄 (A4 출력)
+          </button>
         </div>
 
         <!-- Printable Document Area -->
@@ -730,31 +730,9 @@
             </tbody>
           </table>
 
-          <!-- Section 7: 전담코치 최종 종합 평가 및 제언 (최종 보고서 전용) -->
-          <div id="rep-final-eval-section" style="display: none;">
-            <div class="report-section-header">7. 전담코치 최종 종합 평가 및 제언</div>
-            <table class="report-table">
-              <tr>
-                <td id="rep-final-eval-text" style="background-color: #f8fafc; font-weight: 600; line-height: 1.5; white-space: pre-wrap; color: var(--text-primary); padding: 16px 24px;">-</td>
-              </tr>
-            </table>
-          </div>
-
           <div style="margin-top: 40px; text-align: center; font-size: 0.8rem; color: #718096;">
             <p>위와 같이 2026년 창업중심대학 스타트업 온보딩 모니터링 결과를 보고합니다.</p>
             <p style="margin-top: 20px; font-weight: 700; font-size: 0.9rem; color: #2d3748;">한남대학교 창업지원단</p>
-          </div>
-        </div>
-
-        <!-- 최종 종합 평가 작성 영역 (코치 전용, 인쇄 비대상) -->
-        <div id="report-coach-eval-input-container" style="display: none; background: var(--bg-secondary); padding: 24px; border-radius: 16px; border: 1px solid var(--border-color); margin-top: 24px;">
-          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">✍️ 전담코치 최종 종합 평가 작성 (최종 결과보고서 전용)</h3>
-          <div class="form-group" style="margin-bottom: 16px;">
-            <label for="report-final-eval-textarea">해당 스타트업에 대한 1년 최종 종합 의견 및 성장 제언을 기록하세요.</label>
-            <textarea id="report-final-eval-textarea" rows="4" placeholder="여기에 최종 평가 의견을 입력하세요. 로컬 저장 및 구글 스프레드시트에 연동됩니다." style="width: 100%; font-family: inherit; font-size: 0.9rem; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);"></textarea>
-          </div>
-          <div style="display: flex; justify-content: flex-end;">
-            <button type="button" class="send-btn" id="btn-save-report-eval" style="padding: 10px 20px;">💾 최종 종합 평가 저장</button>
           </div>
         </div>
       </section>
@@ -1068,6 +1046,8 @@
         <div style="border-top: 1px solid var(--border-color); padding-top: 12px;">
           <label style="font-weight:600; font-size:0.8rem; color:var(--text-secondary); margin-bottom:8px; display:block;">🗓️ 월별 사업비 집행 점검 (체크 시 완료)</label>
           <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+            <label style="font-size:0.8rem; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="chk-m5"> 5월</label>
+            <label style="font-size:0.8rem; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="chk-m6"> 6월</label>
             <label style="font-size:0.8rem; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="chk-m7"> 7월</label>
             <label style="font-size:0.8rem; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="chk-m8"> 8월</label>
             <label style="font-size:0.8rem; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="chk-m9"> 9월</label>
@@ -1088,14 +1068,9 @@
           </div>
         </div>
 
-        <div class="modal-footer" style="border-top: 1px solid var(--border-color); padding-top: 16px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <button type="button" class="action-btn" id="btn-delete-company" style="background-color: #ef4444; color: #fff; border: none; display: none;">🗑️ 기업 삭제</button>
-          </div>
-          <div style="display: flex; gap: 8px;">
-            <button type="button" class="action-btn" id="btn-cancel-company">취소</button>
-            <button type="submit" class="action-btn" style="background-color: var(--accent-color); border: none;">등록/저장</button>
-          </div>
+        <div class="modal-footer" style="border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <button type="button" class="action-btn" id="btn-cancel-company">취소</button>
+          <button type="submit" class="action-btn" style="background-color: var(--accent-color); border: none;">등록/저장</button>
         </div>
       </form>
     </div>

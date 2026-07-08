@@ -26,7 +26,6 @@ body {
   overflow-x: hidden;
   display: flex;
   height: 100vh;
-  word-break: keep-all;
 }
 
 /* Scrollbar Style */
@@ -269,7 +268,6 @@ th, td {
   padding: 16px 24px;
   border-bottom: 1px solid var(--border-color);
   font-size: 0.9rem;
-  word-break: keep-all;
 }
 
 th {
@@ -292,10 +290,7 @@ tr:hover td {
 .company-name {
   font-weight: 600;
   color: var(--text-primary);
-  white-space: nowrap;
 }
-
-
 
 .tag {
   display: inline-block;
@@ -303,7 +298,6 @@ tr:hover td {
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 600;
-  white-space: nowrap;
 }
 
 .tag-pre {
@@ -345,8 +339,6 @@ tr:hover td {
   font-weight: 500;
   transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-  text-align: center;
-  line-height: 1.2;
 }
 
 .action-btn:hover {
@@ -788,7 +780,7 @@ input:focus, select:focus, textarea:focus {
     overflow: visible !important;
   }
   
-  aside, header, .report-controls, .section-title, .logo, .menu-list, .action-btn, #report-coach-eval-input-container {
+  aside, header, .report-controls, .section-title, .logo, .menu-list, .action-btn {
     display: none !important;
   }
   
@@ -812,273 +804,6 @@ input:focus, select:focus, textarea:focus {
     margin: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
-  }
-}
-
-/* ==========================================
-   MOBILE & RESPONSIVE DESIGN (Media Queries)
-   ========================================== */
-@media (max-width: 768px) {
-  body {
-    flex-direction: column;
-    height: auto;
-    overflow-y: auto;
-  }
-
-  /* Aside (Sidebar) Mobile Customization */
-  aside {
-    width: 100%;
-    height: auto;
-    padding: 16px 16px 12px 16px;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.01);
-  }
-
-  .logo {
-    margin-bottom: 12px;
-    justify-content: flex-start;
-  }
-  
-  .logo-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 0.95rem;
-  }
-
-  /* Hide decorative sidebar sections to optimize vertical space */
-  aside div[style*="background-color"],
-  aside div[style*="margin-top: auto"] {
-    display: none !important;
-  }
-
-  /* Transform Menu list into a horizontally scrolling bar */
-  .menu-list {
-    flex-direction: row;
-    overflow-x: auto;
-    white-space: nowrap;
-    gap: 6px;
-    padding-bottom: 6px;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-  }
-  
-  .menu-list::-webkit-scrollbar {
-    height: 4px;
-  }
-  
-  .menu-list::-webkit-scrollbar-thumb {
-    background: rgba(79, 70, 229, 0.2);
-    border-radius: 2px;
-  }
-
-  .menu-item {
-    padding: 8px 12px;
-    font-size: 0.8rem;
-    border-left: none !important;
-    border-bottom: 3px solid transparent;
-    border-radius: 6px;
-    scroll-snap-align: start;
-    flex-shrink: 0;
-  }
-
-  .menu-item.active {
-    background-color: rgba(79, 70, 229, 0.05);
-    border-bottom: 3px solid var(--accent-color);
-  }
-
-  /* Logout button alignment */
-  aside div[style*="margin-top: 16px"] {
-    margin-top: 8px !important;
-    width: 100%;
-  }
-
-  #btn-logout {
-    padding: 8px;
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Main Area Mobile Customization */
-  main {
-    height: auto;
-    overflow-y: visible;
-  }
-
-  header {
-    height: auto;
-    padding: 16px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    position: static;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .header-title h1 {
-    font-size: 1.15rem;
-  }
-
-  .header-title p {
-    font-size: 0.75rem;
-  }
-
-  header div[style*="display: flex"] {
-    width: 100%;
-    justify-content: space-between;
-    border-top: 1px dashed var(--border-color);
-    padding-top: 10px;
-  }
-
-  .content-wrapper {
-    padding: 16px;
-    gap: 20px;
-  }
-
-  /* Grids and Cards */
-  .summary-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px;
-  }
-
-  /* Override Dashboard milestone 2-column layout */
-  #section-dash > div[style*="display: grid; grid-template-columns: 1fr 1fr"] {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-  }
-
-  .card {
-    padding: 16px;
-  }
-
-  .card-value {
-    font-size: 1.4rem;
-  }
-
-  /* Table Horizontal Scrolling */
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 8px;
-  }
-
-  table {
-    min-width: 750px; /* Ensure table remains readable */
-  }
-
-  th, td {
-    padding: 12px 14px;
-    font-size: 0.8rem;
-  }
-
-  /* Chat Panel Layout Stacking */
-  .channel-container {
-    grid-template-columns: 1fr !important;
-    grid-template-rows: 160px 420px !important;
-    height: auto !important;
-  }
-
-  .company-list-panel {
-    border-right: none !important;
-    border-bottom: 1px solid var(--border-color);
-  }
-  
-  .company-list-panel .panel-header {
-    padding: 12px 16px;
-    font-size: 0.85rem;
-  }
-
-  .company-chat-item {
-    padding: 10px 16px;
-  }
-
-  .chat-content-panel .panel-header {
-    padding: 12px 16px;
-    font-size: 0.85rem;
-  }
-
-  .chat-messages {
-    padding: 12px;
-    gap: 12px;
-  }
-
-  .message {
-    max-width: 85%;
-  }
-
-  .message-bubble {
-    padding: 10px 12px;
-    font-size: 0.82rem;
-  }
-
-  .chat-input-area {
-    padding: 12px;
-    gap: 6px;
-  }
-
-  .chat-input {
-    padding: 8px 12px;
-    font-size: 0.82rem;
-  }
-
-  .send-btn {
-    padding: 0 12px;
-    font-size: 0.82rem;
-  }
-
-  /* Survey Forms Responsive */
-  .survey-grid-2 {
-    grid-template-columns: 1fr !important;
-    gap: 12px;
-  }
-
-  .survey-card {
-    padding: 16px;
-  }
-
-  .survey-section-title {
-    font-size: 0.95rem;
-    margin-top: 16px;
-    margin-bottom: 12px;
-  }
-
-  /* Report Section */
-  .report-controls {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 12px;
-  }
-
-  .report-paper {
-    padding: 24px 16px;
-  }
-
-  .report-header h2 {
-    font-size: 1.2rem;
-  }
-
-  .report-table th, .report-table td {
-    padding: 6px 8px;
-    font-size: 0.75rem;
-  }
-
-  /* Modals and Login Cards */
-  .modal {
-    width: 90% !important;
-    padding: 20px !important;
-    gap: 16px;
-  }
-
-  .login-card {
-    width: 90% !important;
-    padding: 24px 20px !important;
-  }
-
-  .login-card h2 {
-    font-size: 1.25rem !important;
   }
 }
 
