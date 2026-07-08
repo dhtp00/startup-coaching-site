@@ -494,13 +494,13 @@
               <input type="text" id="sv-edu-content" placeholder="예: 정부지원사업 정산 실무 교육, 초기 IR 피칭 멘토링" required>
             </div>
             <div class="form-group" style="margin-bottom: 24px;">
-              <label for="sv-edu-method">선호하는 학습 방법</label>
-              <select id="sv-edu-method" required>
-                <option value="온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)">온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)</option>
-                <option value="오프라인 교육 (전문가 초청 세미나, 집체 워크숍)">오프라인 교육 (전문가 초청 세미나, 집체 워크숍)</option>
-                <option value="1:1 맞춤형 밀착 코칭 (사무실 현장 지도)">1:1 맞춤형 밀착 코칭 (사무실 현장 지도)</option>
-                <option value="서면/텍스트 학습 (가이드라인, 체크리스트 자료독학)">서면/텍스트 학습 (가이드라인, 체크리스트 자료독학)</option>
-              </select>
+              <label style="margin-bottom: 8px; display:block;">선호하는 학습 방법 (복수 선택 가능)</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <label style="font-size: 0.82rem; font-weight: normal; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="sv-edu-method-chk" value="온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)"> 온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)</label>
+                <label style="font-size: 0.82rem; font-weight: normal; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="sv-edu-method-chk" value="오프라인 교육 (전문가 초청 세미나, 집체 워크숍)"> 오프라인 교육 (전문가 초청 세미나, 집체 워크숍)</label>
+                <label style="font-size: 0.82rem; font-weight: normal; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="sv-edu-method-chk" value="1:1 맞춤형 밀착 코칭 (사무실 현장 지도)"> 1:1 맞춤형 밀착 코칭 (사무실 현장 지도)</label>
+                <label style="font-size: 0.82rem; font-weight: normal; display: flex; align-items: center; gap: 6px;"><input type="checkbox" name="sv-edu-method-chk" value="서면/텍스트 학습 (가이드라인, 체크리스트 자료독학)"> 서면/텍스트 학습 (가이드라인, 체크리스트 자료독학)</label>
+              </div>
             </div>
 
             <!-- 코치 맞춤형 지원 전략 수립 -->
@@ -1148,6 +1148,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260708_5"></script>
+  <script src="app.js?v=20260708_6"></script>
 </body>
 </html>

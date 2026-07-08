@@ -1999,7 +1999,10 @@ function renderSurveySection() {
     document.getElementById("sv-need-goal").value = targetCompany.surveyData.needGoal || "";
     document.getElementById("sv-need-deliverable").value = targetCompany.surveyData.needDeliverable || "";
     document.getElementById("sv-edu-content").value = targetCompany.surveyData.eduContent || "";
-    document.getElementById("sv-edu-method").value = targetCompany.surveyData.eduMethod || "온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)";
+    const eduMethodStr = targetCompany.surveyData.eduMethod || "";
+    document.querySelectorAll("input[name='sv-edu-method-chk']").forEach(chk => {
+      chk.checked = eduMethodStr.includes(chk.value);
+    });
     strategyTextarea.value = targetCompany.surveyData.customStrategy || "";
   } else {
     // Fill basic details from existing profile
@@ -2033,7 +2036,9 @@ function renderSurveySection() {
     document.getElementById("sv-need-goal").value = "";
     document.getElementById("sv-need-deliverable").value = "";
     document.getElementById("sv-edu-content").value = "";
-    document.getElementById("sv-edu-method").value = "온라인 교육 (VOD 시청, 실시간 Zoom 웨비나)";
+    document.querySelectorAll("input[name='sv-edu-method-chk']").forEach(chk => {
+      chk.checked = false;
+    });
     strategyTextarea.value = "";
   }
 }
@@ -2083,7 +2088,11 @@ document.getElementById("survey-form-el").addEventListener("submit", (e) => {
   const needGoal = document.getElementById("sv-need-goal").value;
   const needDeliverable = document.getElementById("sv-need-deliverable").value;
   const eduContent = document.getElementById("sv-edu-content").value;
-  const eduMethod = document.getElementById("sv-edu-method").value;
+  const checkedEduMethods = [];
+  document.querySelectorAll("input[name='sv-edu-method-chk']:checked").forEach(chk => {
+    checkedEduMethods.push(chk.value);
+  });
+  const eduMethod = checkedEduMethods.join(", ") || "없음";
   const strategy = document.getElementById("sv-strategy").value;
 
   // Sync basic metrics to company model
