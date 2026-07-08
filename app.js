@@ -658,15 +658,15 @@ async function loadCloudData() {
       const data = resData.data;
       
       const isCloudEmpty = !data.COMPANIES || data.COMPANIES.length === 0;
-      const isCloudOld = data.COMPANIES && data.COMPANIES.some(c => c.name.includes("에이아이링크") || c.name.includes("그린에너지"));
+      const isCloudOld = data.COMPANIES && (data.COMPANIES.some(c => c.name.includes("에이아이링크") || c.name.includes("그린에너지") || c.name.includes("드림 소프트")) || data.COMPANIES.length < 19);
       
       if (isCloudEmpty || isCloudOld) {
-        console.log("🔄 클라우드 데이터가 비어있거나 구식입니다. 신규 18개사 데이터로 클라우드 덮어쓰기를 수행합니다.");
+        console.log("🔄 클라우드 데이터가 비어있거나 구식입니다. 신규 19개사 데이터로 클라우드 덮어쓰기를 수행합니다.");
         localStorage.removeItem("COMPANIES");
         localStorage.removeItem("USERS");
         companies = defaultCompanies;
         USERS = {
-          "osy0922@hnu.kr": { role: "coach", name: "정세정 주임연구원", companyId: null, password: "osy0922" },
+          "osy0922@hnu.kr": { role: "coach", name: "오세연 코치", companyId: null, password: "osy0922" },
           "20424601@onboard.com": { role: "startup", name: "박지훈 대표", companyId: 1, password: "20424601", isFirstLogin: true },
           "20425162@onboard.com": { role: "startup", name: "신상호 대표", companyId: 2, password: "20425162", isFirstLogin: true },
           "20418716@onboard.com": { role: "startup", name: "오영웅 대표", companyId: 3, password: "20418716", isFirstLogin: true },
@@ -684,7 +684,8 @@ async function loadCloudData() {
           "20419158@onboard.com": { role: "startup", name: "신민준 대표", companyId: 15, password: "20419158", isFirstLogin: true },
           "20427627@onboard.com": { role: "startup", name: "이남주 대표", companyId: 16, password: "20427627", isFirstLogin: true },
           "20425790@onboard.com": { role: "startup", name: "최병진 대표", companyId: 17, password: "20425790", isFirstLogin: true },
-          "20431435@onboard.com": { role: "startup", name: "이준원 대표", companyId: 18, password: "20431435", isFirstLogin: true }
+          "20431435@onboard.com": { role: "startup", name: "이준원 대표", companyId: 18, password: "20431435", isFirstLogin: true },
+          "0426298510@onboard.com": { role: "startup", name: "오세연 대표", companyId: 19, password: "0426298510", isFirstLogin: true }
         };
         saveToLocalStorage(); // Trigger syncData post to overwrite!
       } else {
@@ -782,13 +783,17 @@ loginForm.addEventListener("submit", (e) => {
   const emailInput = loginEmail.value.trim();
   const password = loginPassword.value.trim();
   
-  let matchedUserKey = Object.keys(USERS).find(key => key === emailInput);
-  
-  if (!matchedUserKey) {
-    matchedUserKey = Object.keys(USERS).find(key => USERS[key].name.split(" ")[0] === emailInput);
-  }
+  // Robust matching that accounts for name collisions (e.g. coach 오세연 vs startup representative 오세연)
+  const matchedUserKey = Object.keys(USERS).find(key => {
+    const u = USERS[key];
+    const isIdMatch = (key.toLowerCase() === emailInput.toLowerCase()) ||
+                      (key.split("@")[0].toLowerCase() === emailInput.toLowerCase()) ||
+                      (u.name.split(" ")[0] === emailInput) ||
+                      (u.name.replace(/\s+/g, "") === emailInput.replace(/\s+/g, ""));
+    return isIdMatch && u.password === password;
+  });
 
-  if (matchedUserKey && USERS[matchedUserKey].password === password) {
+  if (matchedUserKey) {
     currentUser = USERS[matchedUserKey];
     
     // Check if it's first login
